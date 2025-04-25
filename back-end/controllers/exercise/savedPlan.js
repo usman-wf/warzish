@@ -1,5 +1,5 @@
-import SavedPlan from '../models/savedPlanModel.js';
-import WorkoutPlan from '../models/workoutPlanModel.js';
+import SavedPlan from '../../models/savedPlans.js';
+import WorkoutPlan from '../../models/workoutPlan.js';
 
 // Save a workout plan
 export const saveWorkoutPlan = async (req, res) => {

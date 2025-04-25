@@ -5,7 +5,7 @@ import {
   getExerciseById,
   updateExercise,
   deleteExercise
-} from '../controllers/exerciseController.js';
+} from '../controllers/exercise/exercise.js';
  
 const router = express.Router();
 router
@@ -30,7 +30,7 @@ import {
   getWorkoutPlanById,
   updateWorkoutPlan,
   deleteWorkoutPlan
-} from '../controllers/workoutPlanController.js';
+} from '../controllers/exercise/workoutPlan.js';
  
 
 router
@@ -52,7 +52,7 @@ import {
   getSavedWorkoutPlans,
   removeSavedWorkoutPlan,
   updateSavedWorkoutPlan
-} from '../controllers/savedPlanController.js';
+} from '../controllers/exercise/savedPlan.js';
 
 
 

@@ -1,4 +1,4 @@
-import Exercise from '../models/exerciseModel.js';
+import Exercise from '../../models/exercises.js';
 
 // Create a new exercise
 export const createExercise = async (req, res) => {

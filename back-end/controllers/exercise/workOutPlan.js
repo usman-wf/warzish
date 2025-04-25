@@ -1,6 +1,6 @@
 
-import WorkoutPlan from '../models/workoutPlanModel.js';
-import Exercise from '../models/exerciseModel.js';
+import WorkoutPlan from '../../models/workoutPlan.js';
+import Exercise from '../../models/exercises.js';
 
 // Create a new workout plan
 export const createWorkoutPlan = async (req, res) => {
