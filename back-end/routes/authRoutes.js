@@ -1,8 +1,8 @@
-const express = require('express');
-const User = require('../models/userModel'); // Import the User model
-const jwt = require('jsonwebtoken');
+import { Router } from 'express';
+import User from '../models/userModel.js'; // Import the User model, without findOne
+import jwt from 'jsonwebtoken'; // Import as default and use jwt.sign and jwt.verify
 
-const router = express.Router();
+const router = Router();
 
 router.post('/signup', async (req, res) => {
     const { name, username, email, password } = req.body;
@@ -32,6 +32,7 @@ router.post('/login', async (req, res) => {
 
     try {
         // Check user credentials (authenticate user)
+        // Use User.findOne instead of imported findOne
         const user = await User.findOne({ email });
 
         if (!user || user.password !== password) {
@@ -66,4 +67,5 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-module.exports = { router, authenticateToken };
+// Export both router and middleware
+export { router, authenticateToken };
