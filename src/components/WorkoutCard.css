@@ -1,0 +1,65 @@
+.WorkoutCard {
+    display: inline-flex;
+    padding: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  
+    border-radius: 8px;
+    background-color: var(--Background-Color-Black);
+  }
+  
+  h2.CardTitle {
+    width: 230px;
+    color: var(--Secondary-Color-Yellow);
+  
+    /* Text-lg/Bold */
+    /* font-family: Poppins; */
+    /* font-size: 18px; */
+    font-weight: 700;
+  }
+  
+  .Status {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .StatusWrapper {
+    border-radius: 16px;
+    display: flex;
+    padding: 5px 8px;
+    flex-direction: column;
+    align-items: flex-start;
+  
+    font-size: 13px;
+    font-weight: 700;
+  }
+  
+  .Difficulty {
+    background-color: var(--Green-500, #22c55e);
+  }
+  
+  .Category {
+    background-color: var(--Pink-600, #db2777);
+  }
+  
+  .LineBreak {
+    width: 250px;
+    height: var(--0, 1px);
+    background-color: var(--White, #fff);
+  }
+  
+  .Description    {
+      max-width: 250px;
+  
+      font-weight: 300;
+  }
+  
+  .button.secondary{
+    display: flex;
+    align-self: flex-start;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: 600;
+  }

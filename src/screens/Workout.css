@@ -1,0 +1,54 @@
+.Workout {
+  /* width: 100vw; */
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+
+  background-color: #f1f1f1;
+}
+
+.WorkoutHero {
+  /* margin: 0 auto; */
+  display: flex;
+  padding: 10px;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1 0 0;
+  align-self: stretch;
+
+  margin-left: var(--margin-left);
+}
+
+.WorkoutNav {
+  display: flex;
+  padding: 20px 10px 20px 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.WorkoutNavItem {
+  display: flex;
+  width: 230px;
+  padding: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+
+  border-radius: 8px;
+  background-color: rgba(209, 213, 219, 0.5);
+  /* background-color: rgba(150, 153, 157, 0.5); */
+
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--Background-Color-Black);
+
+  cursor: pointer;
+}
+
+.WorkoutNavItem.Active {
+  background-color: var(--Background-Color-Black);
+  color: var(--Secondary-Color-Yellow);
+}

@@ -1,0 +1,21 @@
+.DashCard   {
+    padding: 4px 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 40px;
+    
+    background-color: #EF4444;
+    border-radius: 10px;
+}
+
+.Wrapper-Left  .Wrapper-Right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.Wrapper-Right  {
+    align-self: center;
+    justify-self:right;
+}
