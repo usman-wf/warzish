@@ -1,6 +1,4 @@
-// File: server.js
 
-// Require Express and set up your Express app:
 import express from 'express';
 import process from 'process';
 import { router } from './routes/authRoutes.js'; // Import the route file
@@ -10,6 +8,8 @@ const PORT = 3030;
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use('/api', router);
+
 
 // Connect to MongoDB using Mongoose:
 import connectToMongoDB from './db/mongoose.js';
@@ -27,6 +27,5 @@ async function startServer() {
   
   startServer();
 
-app.use('/api', router);
 
 

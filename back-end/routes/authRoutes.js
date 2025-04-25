@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken'; // Import as default and use jwt.sign and jwt.ve
 
 const router = Router();
 
+////ROUTE  ROUTES AS EXAMPLE : /LOCALHOST:3030/api/signup
+
 router.post('/signup', async (req, res) => {
     const { name, username, email, password } = req.body;
 
@@ -31,8 +33,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Check user credentials (authenticate user)
-        // Use User.findOne instead of imported findOne
+       
         const user = await User.findOne({ email });
 
         if (!user || user.password !== password) {
