@@ -4,9 +4,6 @@ import process from 'process';
 import { router } from './routes/authRoutes.js';
 import exerciseRouter from './routes/exercise.js';
 import foodRouter from './routes/food.js';
-import mealEntryRouter from './routes/mealEntry.js';
-import dailyTargetRouter from './routes/dailyTarget.js';
-import mealPlanRouter from './routes/mealPlan.js';
 
 import dotenv from 'dotenv';
 dotenv.config({ path: './config/config.env' }); // Load environment variables from config.env file
@@ -18,10 +15,6 @@ app.use(express.json());
 app.use(cors());
 app.use('/api', router);
 app.use('/exercise',exerciseRouter)
-app.use('/food', foodRouter);
-app.use('/meal', mealEntryRouter);
-app.use('/daily', dailyTargetRouter);
-app.use('/plan', mealPlanRouter);
 app.use('/food', foodRouter);
 
 

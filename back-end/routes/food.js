@@ -1,15 +1,9 @@
-import foodRoutes from './foodRoutes.js';
-import mealEntryRoutes from './mealEntryRoutes.js';
-import dailyTargetRoutes from './dailyTargetRoutes.js';
-import mealPlanRoutes from './mealPlanRoutes.js';
+
 import express from 'express';
 const router = express.Router();
 
 // Mount all routes
-router.use('/food', foodRoutes);
-router.use('/meal-entries', mealEntryRoutes);
-router.use('/daily-targets', dailyTargetRoutes);
-router.use('/meal-plans', mealPlanRoutes);
+
 
  
  
@@ -19,7 +13,7 @@ import {
   createFood,
   updateFood,
   deleteFood
-} from '../controllers/foodController.js';
+} from '../controllers/food/food.js';
 
  
 router.get('/food', getAllFoods);
@@ -37,7 +31,7 @@ import {
   addMealEntry,
   updateMealEntry,
   deleteMealEntry
-} from '../controllers/mealEntryController.js';
+} from '../controllers/food/meal.js';
 
  
 router.get('/meal', getMealEntries);
@@ -51,7 +45,7 @@ import {
   getUserDailyTargets,
   createOrUpdateDailyTargets,
   calculateRecommendedTargets
-} from '../controllers/dailyTargetController.js';
+} from '../controllers/food/daily.js';
  
 router.get('/daily', getUserDailyTargets);
 router.post('/daily',  createOrUpdateDailyTargets);
@@ -65,7 +59,7 @@ import {
   updateMealPlan,
   deleteMealPlan,
   getMealPlanNutrition
-} from '../controllers/mealPlanController.js';
+} from '../controllers/food/plan.js';
 
  
 router.get('/plan',  getAllMealPlans);
