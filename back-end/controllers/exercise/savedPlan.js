@@ -8,25 +8,18 @@ export const saveWorkoutPlan = async (req, res) => {
     
     // Check if workout plan exists
     const workoutPlan = await WorkoutPlan.findById(workoutPlanId);
-    
+   
     if (!workoutPlan) {
       return res.status(404).json({
         success: false,
         message: 'Workout plan not found'
       });
     }
-    
-    // Check if user can access this plan to save it
-    if (workoutPlan.userId.toString() !== req.user.id && !workoutPlan.isPublic) {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied. This workout plan is private'
-      });
-    }
+  
     
     // Check if already saved
     const existingSaved = await SavedPlan.findOne({
-      userId: req.user.id,
+      userId: "680bdbbf58c1fa94b816eba5",
       workoutPlanId
     });
     
@@ -36,10 +29,10 @@ export const saveWorkoutPlan = async (req, res) => {
         message: 'You have already saved this workout plan'
       });
     }
-    
+  
     // Create new saved plan
     const newSavedPlan = new SavedPlan({
-      userId: req.user.id,
+      userId: "680bdbbf58c1fa94b816eba5",
       workoutPlanId,
       folder: folder || 'Default'
     });
@@ -64,7 +57,7 @@ export const getSavedWorkoutPlans = async (req, res) => {
     const { folder, page = 1, limit = 10 } = req.query;
     
     // Build filter object
-    const filter = { userId: req.user.id };
+    const filter = { userId: '680bdbbf58c1fa94b816eba5' };
     
     if (folder) filter.folder = folder;
     
@@ -115,7 +108,7 @@ export const removeSavedWorkoutPlan = async (req, res) => {
     }
     
     // Check if user is the owner
-    if (savedPlan.userId.toString() !== req.user.id) {
+    if (savedPlan.userId.toString() !== '680bdbbf58c1fa94b816eba5') {
       return res.status(403).json({
         success: false,
         message: 'Access denied. You can only remove your own saved plans'
@@ -151,7 +144,7 @@ export const updateSavedWorkoutPlan = async (req, res) => {
     }
     
     // Check if user is the owner
-    if (savedPlan.userId.toString() !== req.user.id) {
+    if (savedPlan.userId.toString() !== '680bdbbf58c1fa94b816eba5') {
       return res.status(403).json({
         success: false,
         message: 'Access denied. You can only update your own saved plans'

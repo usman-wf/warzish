@@ -2,11 +2,6 @@
 import express from 'express';
 const router = express.Router();
 
-// Mount all routes
-
-
- 
- 
 import {
   getAllFoods,
   getFoodById,

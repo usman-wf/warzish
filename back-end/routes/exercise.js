@@ -14,7 +14,7 @@ router
   .get(getAllExercises);
 
 router
-  .route('/exercises:id')
+  .route('/exercises/:id')
   .get(getExerciseById)
   .put(updateExercise)
   .delete( deleteExercise);
@@ -39,7 +39,7 @@ router
   .get(getUserWorkoutPlans);
 
 router
-  .route('/workout:id')
+  .route('/workout/:id')
   .get( getWorkoutPlanById)
   .put( updateWorkoutPlan)
   .delete( deleteWorkoutPlan);
@@ -57,12 +57,12 @@ import {
 
 
 router
-  .route('/workout/saved')
+  .route('/workout-saved')
   .post(saveWorkoutPlan)
   .get(getSavedWorkoutPlans);
 
 router
-  .route('/workout/saved:id')
+  .route('/workout-saved/:id')
   .delete(removeSavedWorkoutPlan)
   .put(updateSavedWorkoutPlan);
 

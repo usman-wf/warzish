@@ -29,6 +29,9 @@ export const createExercise = async (req, res) => {
   }
 };
 
+// /
+
+
 // Get all exercises with filtering and pagination
 export const getAllExercises = async (req, res) => {
   try {
