@@ -6,16 +6,18 @@ import {
   getAllFoods,
   getFoodById,
   createFood,
+  bulkCreateFoods,
   updateFood,
   deleteFood
 } from '../controllers/food/food.js';
 
  
 router.get('/food', getAllFoods);
-router.get('/food:id', getFoodById);
+router.post('/foods', bulkCreateFoods); // Bulk create endpoint
+router.get('/food/:id', getFoodById);
 router.post('/food', createFood);
-router.put('/food:id', updateFood);
-router.delete('/food:id', deleteFood);
+router.put('/food/:id', updateFood);
+router.delete('/food/:id', deleteFood);
 
  
 // routes/mealEntryRoutes.js
@@ -30,10 +32,10 @@ import {
 
  
 router.get('/meal', getMealEntries);
-router.get('/meal/summary', getDailyNutritionSummary);
+router.get('/meal-summary', getDailyNutritionSummary);
 router.post('/meal', addMealEntry);
-router.put('/meal:id',  updateMealEntry);
-router.delete('/meal:id',   deleteMealEntry);
+router.put('/meal/:id',  updateMealEntry);
+router.delete('/meal/:id',   deleteMealEntry);
 
  
 import {
@@ -59,9 +61,9 @@ import {
  
 router.get('/plan',  getAllMealPlans);
 router.get('/plan:id',   getMealPlanById);
-router.get('/plan:id/nutrition', getMealPlanNutrition);
+router.get('/plan/:id/nutrition', getMealPlanNutrition);
 router.post('/plan',   createMealPlan);
-router.put('/plan:id',   updateMealPlan);
-router.delete('/plan:id',   deleteMealPlan);
+router.put('/plan/:id',   updateMealPlan);
+router.delete('/plan/:id',   deleteMealPlan);
 
 export default router;

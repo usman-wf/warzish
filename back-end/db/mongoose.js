@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 
 //LOCAL DB SETTING TEMPORARY
-const uri = "mongodb://localhost:27017/warzishPlanner";
+const uri = "mongodb+srv://usman:g%40*K8.tkp223Hf_@warzish.u11vzho.mongodb.net/warzishPlanner?retryWrites=true&w=majority&appName=Warzish";
 
 // Connect to MongoDB with Mongoose
 async function connectToMongoDB() {
   try {
-    await mongoose.connect(uri);
+    await mongoose.connect(uri, { dbName: 'warzishPlanner' });
     console.log('Connected to MongoDB via Mongoose');
     return mongoose.connection;
   } catch (error) {

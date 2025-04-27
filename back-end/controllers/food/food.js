@@ -13,7 +13,7 @@ export const getAllFoods = async (req, res) => {
     // Only return system foods or user's custom foods
     filter.$or = [
       { isCustom: false },
-      { isCustom: true, user: req.user.id }
+      { isCustom: true, user:  '680bdbbf58c1fa94b816eba5' }
     ];
     
     // Optional name search
@@ -50,7 +50,7 @@ export const getFoodById = async (req, res) => {
     }
     
     // Check if user has access to this food
-    if (food.isCustom && food.user.toString() !== req.user.id) {
+    if (food.isCustom && food.user.toString() !==  '680bdbbf58c1fa94b816eba5') {
       return res.status(401).json({ message: 'User not authorized' });
     }
     
@@ -102,6 +102,46 @@ export const createFood = async (req, res) => {
   }
 };
 
+
+export const bulkCreateFoods = async (req, res) => {
+  try {
+    const { foods, isCustom = true } = req.body;
+    
+    if (!Array.isArray(foods) || foods.length === 0) {
+      return res.status(400).json({ message: 'Foods array is required and cannot be empty' });
+    }
+    
+    // Limit the number of foods that can be created at once (optional)
+    if (foods.length > 100) {
+      return res.status(400).json({ message: 'Maximum 100 foods can be created at once' });
+    }
+    
+    // Add user and isCustom to each food item
+    const preparedFoods = foods.map(food => ({
+      ...food,
+      user:   '680bdbbf58c1fa94b816eba5',
+      isCustom
+    }));
+    
+    // Insert many foods at once
+    const createdFoods = await Food.insertMany(preparedFoods);
+    
+    return res.status(201).json({
+      message: `Successfully created ${createdFoods.length} foods`,
+      count: createdFoods.length,
+      foods: createdFoods
+    });
+  } catch (err) {
+    console.error(err.message);
+    // Handle validation errors
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ message: err.message });
+    }
+    return res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+
 // Update an existing custom food
 export const updateFood = async (req, res) => {
   try {
@@ -112,7 +152,7 @@ export const updateFood = async (req, res) => {
     }
     
     // Check if user owns this food
-    if (!food.isCustom || food.user.toString() !== req.user.id) {
+    if (!food.isCustom || food.user.toString() !== '680bdbbf58c1fa94b816eba5') {
       return res.status(401).json({ message: 'User not authorized' });
     }
     
@@ -163,7 +203,7 @@ export const deleteFood = async (req, res) => {
     }
     
     // Check if user owns this food
-    if (!food.isCustom || food.user.toString() !== req.user.id) {
+    if (!food.isCustom || food.user.toString() !==  '680bdbbf58c1fa94b816eba5') {
       return res.status(401).json({ message: 'User not authorized' });
     }
     
