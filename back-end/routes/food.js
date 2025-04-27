@@ -46,7 +46,7 @@ import {
  
 router.get('/daily', getUserDailyTargets);
 router.post('/daily',  createOrUpdateDailyTargets);
-router.get('/daily/calculate',  calculateRecommendedTargets);
+router.get('/daily-calculate',  calculateRecommendedTargets);
 
   
 import {
