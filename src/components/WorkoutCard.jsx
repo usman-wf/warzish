@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import star from '../assets/star.svg'
 import './WorkoutCard.css'
 

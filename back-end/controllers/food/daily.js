@@ -4,7 +4,7 @@ import User from '../../models/userModel.js';
 // Get user's daily nutrition targets
 export const getUserDailyTargets = async (req, res) => {
   try {
-    const dailyTarget = await DailyTarget.findOne({ user: '680bdbbf58c1fa94b816eba5' });
+    const dailyTarget = await DailyTarget.findOne({ user: req.user.id });
     
     if (!dailyTarget) {
       return res.status(404).json({ message: 'Daily targets not set up yet' });
@@ -34,7 +34,7 @@ export const createOrUpdateDailyTargets = async (req, res) => {
     } = req.body;
     
     // Find existing target for user or create new one
-    let dailyTarget = await DailyTarget.findOne({ user: '680bdbbf58c1fa94b816eba5' });
+    let dailyTarget = await DailyTarget.findOne({ user: req.user.id });
     
     if (dailyTarget) {
       // Update using modern ES6 approach
@@ -54,7 +54,7 @@ export const createOrUpdateDailyTargets = async (req, res) => {
     } else {
       // Create new daily target
       dailyTarget = new DailyTarget({
-        user: '680bdbbf58c1fa94b816eba5',
+        user: req.user.id,
         bmr,
         calorieTarget,
         proteinTarget,
@@ -79,7 +79,7 @@ export const createOrUpdateDailyTargets = async (req, res) => {
 // Calculate recommended daily targets based on user profile
 export const calculateRecommendedTargets = async (req, res) => {
   try {
-    const user = await User.findById('680bdbbf58c1fa94b816eba5');
+    const user = await User.findById(req.user.id);
     
     if (!user.height?.value || !user.weight?.value || !user.dateOfBirth || !user.gender) {
       return res.status(400).json({ 

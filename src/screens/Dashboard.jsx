@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../components/Navbar"
-import Card from "../components/Dash-Card"
+
 import DashCard from "../components/Dash-Card";
 import './Dashboard.css'
 

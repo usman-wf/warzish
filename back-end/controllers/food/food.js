@@ -13,7 +13,7 @@ export const getAllFoods = async (req, res) => {
     // Only return system foods or user's custom foods
     filter.$or = [
       { isCustom: false },
-      { isCustom: true, user:  '680bdbbf58c1fa94b816eba5' }
+      { isCustom: true, user:  req.user.id }
     ];
     
     // Optional name search
@@ -50,7 +50,7 @@ export const getFoodById = async (req, res) => {
     }
     
     // Check if user has access to this food
-    if (food.isCustom && food.user.toString() !==  '680bdbbf58c1fa94b816eba5') {
+    if (food.isCustom && food.user.toString() !==  req.user.id) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     
@@ -119,7 +119,7 @@ export const bulkCreateFoods = async (req, res) => {
     // Add user and isCustom to each food item
     const preparedFoods = foods.map(food => ({
       ...food,
-      user:   '680bdbbf58c1fa94b816eba5',
+      user:   req.user.id,
       isCustom
     }));
     
@@ -152,7 +152,7 @@ export const updateFood = async (req, res) => {
     }
     
     // Check if user owns this food
-    if (!food.isCustom || food.user.toString() !== '680bdbbf58c1fa94b816eba5') {
+    if (!food.isCustom || food.user.toString() !== req.user.id) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     
@@ -203,7 +203,7 @@ export const deleteFood = async (req, res) => {
     }
     
     // Check if user owns this food
-    if (!food.isCustom || food.user.toString() !==  '680bdbbf58c1fa94b816eba5') {
+    if (!food.isCustom || food.user.toString() !==  req.user.id) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     

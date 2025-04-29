@@ -19,7 +19,7 @@ export const saveWorkoutPlan = async (req, res) => {
     
     // Check if already saved
     const existingSaved = await SavedPlan.findOne({
-      userId: "680bdbbf58c1fa94b816eba5",
+      userId: req.user.id,
       workoutPlanId
     });
     
@@ -32,7 +32,7 @@ export const saveWorkoutPlan = async (req, res) => {
   
     // Create new saved plan
     const newSavedPlan = new SavedPlan({
-      userId: "680bdbbf58c1fa94b816eba5",
+      userId: req.user.id,
       workoutPlanId,
       folder: folder || 'Default'
     });

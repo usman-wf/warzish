@@ -16,7 +16,7 @@ export const getMealEntries = async (req, res) => {
     
     // Get all entries for the user within date range
     const mealEntries = await MealEntry.find({
-      user: '680bdbbf58c1fa94b816eba5',
+      user: req.user.id,
       date: { $gte: start, $lte: end }
     }).populate('food', 'name servingSize');
     
@@ -43,7 +43,7 @@ export const getDailyNutritionSummary = async (req, res) => {
     const summary = await MealEntry.aggregate([
       {
         $match: {
-          user:  '680bdbbf58c1fa94b816eba5',
+          user:  req.user.id,
           date: { $gte: startOfDay, $lte: endOfDay }
         }
       },
@@ -93,7 +93,7 @@ export const addMealEntry = async (req, res) => {
     
     // Create new meal entry
     const newMealEntry = new MealEntry({
-      user:  '680bdbbf58c1fa94b816eba5',
+      user:  req.user.id,
       food: foodId,
       date: date || new Date(),
       mealType,
@@ -123,7 +123,7 @@ export const updateMealEntry = async (req, res) => {
     }
     
     // Check if user owns this entry
-    if (mealEntry.user.toString() !==  '680bdbbf58c1fa94b816eba5' ) {
+    if (mealEntry.user.toString() !==  req.user.id ) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     
@@ -164,7 +164,7 @@ export const deleteMealEntry = async (req, res) => {
     }
     
     // Check if user owns this entry
-    if (mealEntry.user.toString() !== '680bdbbf58c1fa94b816eba5' ) {
+    if (mealEntry.user.toString() !== req.user.id ) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     

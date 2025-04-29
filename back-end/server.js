@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: './config/config.env' }); // Load environment variables from config.env file
 import cors from "cors";
 
-const PORT = 3030; 
+const PORT = 3000; 
 const app = express();
 app.use(express.json());
 app.use(cors());
