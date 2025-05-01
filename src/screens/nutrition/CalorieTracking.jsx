@@ -1,13 +1,12 @@
-// src/pages/nutrition/CalorieTracking.js
-import   { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import MealLog from '../../components/nutrition/MealLog';
-import NutritionSummary from '../../components/nutrition/NutritionSummary';
-import DateSelector from '../../components/nutrition/DateSelector';
+import MealLog from '../../components/MealLog';
+import NutritionSummary from '../../components/NutritionSummary';
+import DateSelector from '../../components/DateSelector';
 
 const CalorieTracking = () => {
-  const { user } = useAuth();
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [meals, setMeals] = useState([]);
   const [foods, setFoods] = useState([]);
@@ -15,16 +14,28 @@ const CalorieTracking = () => {
   const [dailyPlan, setDailyPlan] = useState(null);
 
   useEffect(() => {
-    if (!user) return;
-    
+    // Check authentication
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('token');
         const dateStr = selectedDate.toISOString().split('T')[0];
         
         const [mealsRes, foodsRes, dailyRes] = await Promise.all([
-          axios.get(`http://localhost:3030/food/meal?date=${dateStr}`),
-          axios.get('http://localhost:3030/food/food'),
-          axios.get('http://localhost:3030/food/daily')
+          axios.get(`http://localhost:3030/food/meal?date=${dateStr}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get('http://localhost:3030/food/food', {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get('http://localhost:3030/food/daily', {
+            headers: { Authorization: `Bearer ${token}` }
+          })
         ]);
         
         setMeals(mealsRes.data);
@@ -38,17 +49,18 @@ const CalorieTracking = () => {
     };
     
     fetchData();
-  }, [user, selectedDate]);
+  }, [navigate, selectedDate]);
 
   const handleAddMeal = async (foodId, mealType, quantity) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post('http://localhost:3030/food/meal', {
         foodId,
         date: selectedDate,
         mealType,
         quantity
       }, {
-        headers: { Authorization: `Bearer ${user.token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       setMeals(prev => [...prev, response.data]);
@@ -59,8 +71,9 @@ const CalorieTracking = () => {
 
   const handleUpdateMeal = async (mealId, updates) => {
     try {
+      const token = localStorage.getItem('token');
       await axios.put(`http://localhost:3030/food/meal/${mealId}`, updates, {
-        headers: { Authorization: `Bearer ${user.token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       setMeals(prev => prev.map(meal => 
@@ -73,8 +86,9 @@ const CalorieTracking = () => {
 
   const handleDeleteMeal = async (mealId) => {
     try {
+      const token = localStorage.getItem('token');
       await axios.delete(`http://localhost:3030/food/meal/${mealId}`, {
-        headers: { Authorization: `Bearer ${user.token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       setMeals(prev => prev.filter(meal => meal._id !== mealId));
@@ -85,8 +99,9 @@ const CalorieTracking = () => {
 
   const handleSaveDailyPlan = async (planData) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post('http://localhost:3030/food/daily', planData, {
-        headers: { Authorization: `Bearer ${user.token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       setDailyPlan(response.data);

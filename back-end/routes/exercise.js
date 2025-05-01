@@ -31,18 +31,29 @@ import {
   updateWorkoutPlan,
   deleteWorkoutPlan
 } from '../controllers/exercise/workoutPlan.js';
- 
+import { authenticateToken } from './authRoutes.js'; // Make sure to import your middleware
 
 router
   .route('/workout')
-  .post(createWorkoutPlan)
-  .get(getUserWorkoutPlans);
+  .post(authenticateToken, createWorkoutPlan)  // Add middleware here
+  .get(authenticateToken, getUserWorkoutPlans); // Add middleware here
 
 router
   .route('/workout/:id')
-  .get( getWorkoutPlanById)
-  .put( updateWorkoutPlan)
-  .delete( deleteWorkoutPlan);
+  .get(authenticateToken, getWorkoutPlanById) // Add middleware here
+  .put(authenticateToken, updateWorkoutPlan) // Add middleware here
+  .delete(authenticateToken, deleteWorkoutPlan); // Add middleware here
+
+// router
+//   .route('/workout')
+//   .post(createWorkoutPlan)
+//   .get(getUserWorkoutPlans);
+
+// router
+//   .route('/workout/:id')
+//   .get( getWorkoutPlanById)
+//   .put( updateWorkoutPlan)
+//   .delete( deleteWorkoutPlan);
 
  
 // File: routes/savedPlanRoutes.js

@@ -1,28 +1,32 @@
-// src/pages/workout/SavedWorkouts.js
-import   { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
-import WorkoutPlanCard from '../../components/workout/WorkoutPlanCard';
+import WorkoutPlanCard from '../../components/WorkoutPlanCard';
 
 const SavedWorkouts = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [workoutPlans, setWorkoutPlans] = useState([]);
   const [savedPlans, setSavedPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
+    // Check authentication using localStorage
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    if (!isAuthenticated) {
       navigate('/login');
       return;
     }
     
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('token');
         const [plansRes, savedRes] = await Promise.all([
-          axios.get('http://localhost:3030/exercise/workout'),
-          axios.get('http://localhost:3030/exercise/workout-saved')
+          axios.get('http://localhost:3000/exercise/workout', {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get('http://localhost:3000/exercise/workout-saved', {
+            headers: { Authorization: `Bearer ${token}` }
+          })
         ]);
         
         setWorkoutPlans(plansRes.data);
@@ -35,19 +39,22 @@ const SavedWorkouts = () => {
     };
     
     fetchData();
-  }, [user, navigate]);
+  }, [navigate]);
 
   const handleSavePlan = async (planId, folder) => {
     try {
-      await axios.post('http://localhost:3030/exercise/workout-saved', {
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:3000/exercise/workout-saved', {
         workoutPlanId: planId,
         folder
       }, {
-        headers: { Authorization: `Bearer ${user.token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       // Refresh saved plans
-      const response = await axios.get('http://localhost:3030/exercise/workout-saved');
+      const response = await axios.get('http://localhost:3000/exercise/workout-saved', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setSavedPlans(response.data);
     } catch (error) {
       console.error('Error saving workout plan:', error);
@@ -56,8 +63,9 @@ const SavedWorkouts = () => {
 
   const handleDeleteSaved = async (savedId) => {
     try {
-      await axios.delete(`http://localhost:3030/exercise/workout-saved/${savedId}`, {
-        headers: { Authorization: `Bearer ${user.token}` }
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:3000/exercise/workout-saved/${savedId}`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       setSavedPlans(prev => prev.filter(plan => plan._id !== savedId));
@@ -68,10 +76,11 @@ const SavedWorkouts = () => {
 
   const handleUpdateFolder = async (savedId, newFolder) => {
     try {
-      await axios.put(`http://localhost:3030/exercise/workout-saved/${savedId}`, {
+      const token = localStorage.getItem('token');
+      await axios.put(`http://localhost:3000/exercise/workout-saved/${savedId}`, {
         folder: newFolder
       }, {
-        headers: { Authorization: `Bearer ${user.token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       setSavedPlans(prev => prev.map(plan => 

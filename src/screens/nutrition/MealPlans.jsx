@@ -1,25 +1,34 @@
-// src/pages/nutrition/MealPlans.js
-import   { useState, useEffect } from 'react';
-//import { useAuth } from '../../context/AuthContext';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import MealPlanCard from '../../components/nutrition/MealPlanCard';
-import MealPlanForm from '../../components/nutrition/MealPlanForm';
+import MealPlanCard from '../../components/MealPlanCard';
+import MealPlanForm from '../../components/MealPlanForm';
 
 const MealPlans = () => {
-  //const { user } = useAuth();
+  const navigate = useNavigate();
   const [mealPlans, setMealPlans] = useState([]);
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
-    
+    // Check authentication
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('token');
         const [plansRes, foodsRes] = await Promise.all([
-          axios.get('http://localhost:3030/food/plan'),
-          axios.get('http://localhost:3030/food/food')
+          axios.get('http://localhost:3030/food/plan', {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get('http://localhost:3030/food/food', {
+            headers: { Authorization: `Bearer ${token}` }
+          })
         ]);
         
         setMealPlans(plansRes.data);
@@ -32,12 +41,13 @@ const MealPlans = () => {
     };
     
     fetchData();
-  }, [user]);
+  }, [navigate]);
 
   const handleCreatePlan = async (planData) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post('http://localhost:3030/food/plan', planData, {
-        headers: { Authorization: `Bearer ${user.token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       setMealPlans(prev => [...prev, response.data]);

@@ -75,8 +75,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Middleware to authenticate requests
-const authenticateToken = (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     
     if (!authHeader) {
@@ -88,13 +87,21 @@ const authenticateToken = (req, res, next) => {
         ? authHeader.substring(7) 
         : authHeader;
 
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(403).json({ error: 'Unauthorized: Invalid token' });
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        
+        // Get full user document and attach to request
+        const user = await User.findById(decoded.userId).select('-password');
+        if (!user) {
+            return res.status(401).json({ error: 'User not found' });
         }
-        req.userId = decoded.userId;
+        
+        req.user = user;
+        req.userId = user._id;
         next();
-    });
+    } catch (error) {
+        return res.status(403).json({ error: 'Unauthorized: Invalid token' });
+    }
 };
 
 // Add a test protected route

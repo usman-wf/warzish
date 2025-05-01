@@ -1,4 +1,5 @@
 
+
 import express from 'express';
 import process from 'process';
 import { router } from './routes/authRoutes.js';
@@ -8,6 +9,7 @@ import foodRouter from './routes/food.js';
 import dotenv from 'dotenv';
 dotenv.config({ path: './config/config.env' }); // Load environment variables from config.env file
 import cors from "cors";
+
 
 const PORT = 3000; 
 const app = express();

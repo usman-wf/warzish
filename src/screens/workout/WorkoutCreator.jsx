@@ -1,13 +1,10 @@
-// src/pages/workout/WorkoutCreator.js
-import   { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
-import ExerciseSelector from '../../components/workout/ExerciseSelector';
-import WorkoutPlanForm from '../../components/workout/WorkoutPlanForm';
+import ExerciseSelector from '../../components/ExerciseSelector';
+import WorkoutPlanForm from '../../components/WorkoutPlanForm';
 
 const WorkoutCreator = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [exercises, setExercises] = useState([]);
   const [workoutPlan, setWorkoutPlan] = useState({
@@ -21,13 +18,18 @@ const WorkoutCreator = () => {
   });
 
   useEffect(() => {
-    if (!user) navigate('/login');
-    fetchExercises();
-  }, [user, navigate]);
+    // Check authentication using localStorage
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    if (!isAuthenticated) {
+      navigate('/login');
+    } else {
+      fetchExercises();
+    }
+  }, [navigate]);
 
   const fetchExercises = async () => {
     try {
-      const response = await axios.get('http://localhost:3030/exercise/exercises');
+      const response = await axios.get('http://localhost:3000/exercise/exercises');
       setExercises(response.data);
     } catch (error) {
       console.error('Error fetching exercises:', error);
@@ -63,8 +65,11 @@ const WorkoutCreator = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3030/exercise/workout', workoutPlan, {
-        headers: { Authorization: `Bearer ${user.token}` }
+      // Get token from localStorage (if you're storing it there)
+      const token = localStorage.getItem('token');
+      
+      await axios.post('http://localhost:3000/exercise/workout', workoutPlan, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/saved-workouts');
     } catch (error) {

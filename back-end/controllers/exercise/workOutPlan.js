@@ -43,13 +43,23 @@ export const createWorkoutPlan = async (req, res) => {
   }
 };
 
-// Get all workout plans for the current user
+
 export const getUserWorkoutPlans = async (req, res) => {
   try {
     const { tags, difficulty, search, page = 1, limit = 10 } = req.query;
+    console.log("FETCHING WORKOUT PLANS");
     
-    // Build filter object
-    const filter = { userId: req.user.id };
+      // Use req.userId which is set by authenticateToken
+      if (!req.userId) {
+        return res.status(401).json({
+          success: false,
+          message: 'Authentication error: User ID not found'
+        });
+      }
+      
+      console.log("Using user ID:", req.userId);
+      
+      const filter = { userId: req.userId }; 
     
     if (difficulty) filter.difficulty = difficulty;
     if (tags) {
@@ -79,12 +89,57 @@ export const getUserWorkoutPlans = async (req, res) => {
       data: workoutPlans
     });
   } catch (error) {
+    console.error("Error in getUserWorkoutPlans:", error);
     res.status(500).json({
       success: false,
       message: error.message
     });
   }
 };
+// Get all workout plans for the current user
+// export const getUserWorkoutPlans = async (req, res) => {
+//   try {
+//     const { tags, difficulty, search, page = 1, limit = 10 } = req.query;
+//     console.log("FETCHING WORKOUT PLANS");
+//     // Build filter object
+//      console.log(req.user);
+//     console.log(req.user.id);
+//     const filter = { userId: req.user.id };
+    
+//     if (difficulty) filter.difficulty = difficulty;
+//     if (tags) {
+//       const tagArray = tags.split(',').map(tag => tag.trim());
+//       filter.tags = { $in: tagArray };
+//     }
+//     if (search) {
+//       filter.$text = { $search: search };
+//     }
+    
+//     // Calculate pagination
+//     const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+//     const workoutPlans = await WorkoutPlan.find(filter)
+//       .skip(skip)
+//       .limit(parseInt(limit))
+//       .sort({ createdAt: -1 });
+    
+//     const total = await WorkoutPlan.countDocuments(filter);
+    
+//     res.status(200).json({
+//       success: true,
+//       count: workoutPlans.length,
+//       total,
+//       totalPages: Math.ceil(total / parseInt(limit)),
+//       currentPage: parseInt(page),
+//       data: workoutPlans
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message
+//     });
+//   }
+// };
 
 // Get workout plan by ID
 export const getWorkoutPlanById = async (req, res) => {
