@@ -1,15 +1,15 @@
-:root {
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
+:root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  /* background-color: var(--Background-Color-Black); */
+  background-color: var(--Background-Color-Black);
+  color: var(--Text-Color-White);
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  /* background-color: #242424; */  
-
+  color-scheme: dark;
+  
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
