@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Food from '../models/food.js';
 
 //LOCAL DB SETTING TEMPORARY
-const uri = "mongodb://localhost:27017/";
+const uri = "mongodb+srv://abtariq:techislife7@warzish.u11vzho.mongodb.net/?retryWrites=true&w=majority&appName=Warzish";
 
 // Default system foods to be added if collection is empty
 const defaultFoods = [
@@ -84,6 +84,6 @@ async function connectToMongoDB() {
     console.error('MongoDB connection error:', error);
     throw error;
   }
-}
+} 
 
-export default connectToMongoDB;
+export default connectToMongoDB; 

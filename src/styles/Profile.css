@@ -1,0 +1,216 @@
+.profile-container {
+    min-height: 100vh;
+    background-color: var(--Background-Color-Black);
+}
+
+.profile-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    padding-top: 70px;
+    /* Add space for the toggle button */
+}
+
+.profile-content h1 {
+    color: var(--Text-Color-White);
+    margin-bottom: 30px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.profile-form {
+    background-color: var(--Card-Background);
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.profile-picture-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profile-picture {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border: 3px solid var(--Primary-Color-Red);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--Primary-Color-Red);
+    color: white;
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.profile-picture-upload {
+    margin-top: 10px;
+}
+
+.upload-btn {
+    background-color: var(--Primary-Color-Red);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+    background-color: #8c0605;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--Text-Color-White);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    font-size: 16px;
+    color: var(--Text-Color-White);
+    background-color: var(--Background-Color-Light);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--Primary-Color-Red);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(118, 5, 4, 0.4);
+}
+
+.disabled-input {
+    background-color: #333;
+    cursor: not-allowed;
+}
+
+.form-group small {
+    display: block;
+    color: #aaa;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.input-with-unit {
+    display: flex;
+}
+
+.input-with-unit input {
+    flex: 1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-with-unit select {
+    width: 80px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+    background-color: var(--Background-Color-Light);
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    row-gap: 10px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: auto;
+    min-width: auto;
+    max-width: auto;
+    margin-right: 8px;
+    background-color: var(--Background-Color-Light);
+}
+
+.checkbox-item label {
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.save-button {
+    background-color: var(--Primary-Color-Red);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.save-button:hover {
+    background-color: #8c0605;
+}
+
+.save-button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    font-size: 18px;
+    color: var(--Text-Color-White);
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .profile-form {
+        padding: 20px;
+    }
+}

@@ -80,16 +80,16 @@ const WorkoutCreator = () => {
     }));
   };
 
-  const handleExerciseChange = (index, field, value) => {
-    const updatedExercises = [...workoutPlan.exercises];
-    updatedExercises[index][field] = value;
-    setWorkoutPlan(prev => ({ ...prev, exercises: updatedExercises }));
-  };
+//   const handleExerciseChange = (index, field, value) => {
+//     const updatedExercises = [...workoutPlan.exercises];
+//     updatedExercises[index][field] = value;
+//     setWorkoutPlan(prev => ({ ...prev, exercises: updatedExercises }));
+//   };
 
-  const handleRemoveExercise = (index) => {
-    const updatedExercises = workoutPlan.exercises.filter((_, i) => i !== index);
-    setWorkoutPlan(prev => ({ ...prev, exercises: updatedExercises }));
-  };
+//   const handleRemoveExercise = (index) => {
+//     const updatedExercises = workoutPlan.exercises.filter((_, i) => i !== index);
+//     setWorkoutPlan(prev => ({ ...prev, exercises: updatedExercises }));
+//   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -157,4 +157,4 @@ const WorkoutCreator = () => {
   );
 };
 
-export default WorkoutCreator;
+// export default WorkoutCreator;

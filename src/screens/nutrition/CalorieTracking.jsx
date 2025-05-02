@@ -379,4 +379,4 @@ const CalorieTracking = () => {
   );
 };
 
-export default CalorieTracking;
+// export default CalorieTracking;
