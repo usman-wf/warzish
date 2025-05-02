@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
+const API_BASE_URL = 'http://localhost:3030';
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +25,7 @@ const Login = () => {
     
     try {
       // Call your actual authentication API
-      const response = await axios.post('http://localhost:3000/api/login', {
+      const response = await axios.post(`${API_BASE_URL}/api/login`, {
         email,
         password
       });

@@ -1,0 +1,168 @@
+.nutrition-summary {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.summary-header {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.summary-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.summary-content {
+  padding: 1rem;
+}
+
+.calorie-summary {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.calorie-display {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.calories-consumed {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.calories-goal {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-left: 0.5rem;
+}
+
+.calorie-percentage {
+  font-size: 0.875rem;
+  color: #16a34a;
+}
+
+.negative-calories {
+  color: #dc2626;
+}
+
+.calorie-progress {
+  height: 0.5rem;
+  background-color: #e5e7eb;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.calorie-progress-bar {
+  height: 100%;
+  background-color: #3b82f6;
+  border-radius: 0.25rem;
+}
+
+.over-limit {
+  background-color: #ef4444;
+}
+
+.macro-summary {
+  margin-bottom: 1.5rem;
+}
+
+.macro-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.macro-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.macro-progress {
+  height: 0.375rem;
+  background-color: #e5e7eb;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  margin-bottom: 0.125rem;
+}
+
+.macro-progress-bar {
+  height: 100%;
+  border-radius: 0.25rem;
+}
+
+.protein-bar {
+  background-color: #2563eb;
+}
+
+.carbs-bar {
+  background-color: #7c3aed;
+}
+
+.fat-bar {
+  background-color: #dc2626;
+}
+
+.macro-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.nutrient-breakdown {
+  margin-bottom: 1.5rem;
+}
+
+.nutrient-header {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.nutrient-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.nutrient-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.nutrient-value {
+  font-weight: 500;
+  color: #111827;
+}
+
+.custom-targets-button {
+  display: block;
+  width: 100%;
+  background-color: #f3f4f6;
+  color: #111827;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.custom-targets-button:hover {
+  background-color: #e5e7eb;
+}

@@ -1,0 +1,90 @@
+.meal-plan-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.meal-plan-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.meal-plan-content {
+  padding: 1rem;
+}
+
+.meal-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.meal-plan-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.meal-plan-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.meal-plan-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.meal-plan-tag {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.tag-calories {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.tag-meals {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.tag-diet {
+  background-color: #fce7f3;
+  color: #9d174d;
+}
+
+.save-plan-btn {
+  background-color: #4ade80;
+  color: white;
+  border: none;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-plan-btn:hover {
+  background-color: #3bba6b;
+}
+
+.saved-badge {
+  background-color: #f3f4f6;
+  color: #374151;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}

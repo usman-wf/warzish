@@ -160,12 +160,18 @@ export const updateMealPlan = async (req, res) => {
     const mealPlan = await MealPlan.findById(req.params.id);
     
     if (!mealPlan) {
-      return res.status(404).json({ message: 'Meal plan not found' });
+      return res.status(404).json({ 
+        success: false,
+        message: 'Meal plan not found' 
+      });
     }
     
     // Check if user owns this meal plan
     if (mealPlan.user.toString() !== req.user.id) {
-      return res.status(401).json({ message: 'User not authorized' });
+      return res.status(401).json({ 
+        success: false,
+        message: 'User not authorized' 
+      });
     }
     
     const {
@@ -183,28 +189,44 @@ export const updateMealPlan = async (req, res) => {
       const foundFoods = await Food.find({ _id: { $in: foodIds } }).countDocuments();
       
       if (foundFoods !== foodIds.length) {
-        return res.status(400).json({ message: 'One or more food items not found' });
+        return res.status(400).json({ 
+          success: false,
+          message: 'One or more food items not found' 
+        });
       }
     }
     
-    // Update using ES6 object spread
-    Object.assign(mealPlan, {
-      ...(name && { name }),
-      ...(description !== undefined && { description }),
-      ...(targetCalories !== undefined && { targetCalories }),
-      ...(weekdays && { weekdays }),
-          ...(isActive !== undefined && { isActive })
-        });
-        
-        await mealPlan.save();
-        return res.json(mealPlan);
-      } catch (err) {
-        console.error(err.message);
-        return res.status(500).json({ message: 'Server Error' });
-      } // Closing the updateMealPlan function
-    }; // Closing the file
-
-
+    // Update fields
+    if (name) mealPlan.name = name;
+    if (description !== undefined) mealPlan.description = description;
+    if (targetCalories !== undefined) mealPlan.targetCalories = targetCalories;
+    if (weekdays) mealPlan.weekdays = weekdays;
+    if (meals) mealPlan.meals = meals;
+    if (isActive !== undefined) mealPlan.isActive = isActive;
+    
+    const updatedMealPlan = await mealPlan.save();
+    
+    // Populate food details for response
+    await updatedMealPlan.populate('meals.food', 'name calories protein carbs fat servingSize');
+    
+    return res.json({
+      success: true,
+      data: updatedMealPlan
+    });
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Meal plan not found' 
+      });
+    }
+    return res.status(500).json({ 
+      success: false,
+      message: 'Server Error' 
+    });
+  }
+};
 
 // Delete a meal plan
 export const deleteMealPlan = async (req, res) => {
@@ -229,4 +251,4 @@ export const deleteMealPlan = async (req, res) => {
     }
     return res.status(500).json({ message: 'Server Error' });
   }
-}; // Closing the file
+};

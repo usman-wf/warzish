@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import WorkoutPlanCard from '../../components/WorkoutPlanCard';
 
+const API_BASE_URL = 'http://localhost:3030';
+
 const SavedWorkouts = () => {
   const navigate = useNavigate();
   const [workoutPlans, setWorkoutPlans] = useState([]);
@@ -21,16 +23,30 @@ const SavedWorkouts = () => {
       try {
         const token = localStorage.getItem('token');
         const [plansRes, savedRes] = await Promise.all([
-          axios.get('http://localhost:3000/exercise/workout', {
+          axios.get(`${API_BASE_URL}/exercise/workout`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://localhost:3000/exercise/workout-saved', {
+          axios.get(`${API_BASE_URL}/exercise/workout-saved`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
         
-        setWorkoutPlans(plansRes.data);
-        setSavedPlans(savedRes.data);
+        // Handle both direct array and nested data property formats
+        const plansData = Array.isArray(plansRes.data) 
+          ? plansRes.data 
+          : (plansRes.data.data || []);
+          
+        const savedData = Array.isArray(savedRes.data) 
+          ? savedRes.data 
+          : (savedRes.data.data || []);
+        
+        console.log('Workout plans response:', plansRes.data);
+        console.log('Workout plans processed:', plansData);
+        console.log('Saved plans response:', savedRes.data);
+        console.log('Saved plans processed:', savedData);
+        
+        setWorkoutPlans(plansData);
+        setSavedPlans(savedData);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -44,7 +60,7 @@ const SavedWorkouts = () => {
   const handleSavePlan = async (planId, folder) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:3000/exercise/workout-saved', {
+      await axios.post(`${API_BASE_URL}/exercise/workout-saved`, {
         workoutPlanId: planId,
         folder
       }, {
@@ -52,10 +68,17 @@ const SavedWorkouts = () => {
       });
       
       // Refresh saved plans
-      const response = await axios.get('http://localhost:3000/exercise/workout-saved', {
+      const response = await axios.get(`${API_BASE_URL}/exercise/workout-saved`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setSavedPlans(response.data);
+      
+      // Extract data from response
+      const savedData = Array.isArray(response.data) 
+        ? response.data 
+        : (response.data.data || []);
+      
+      console.log('Refreshed saved plans:', savedData);
+      setSavedPlans(savedData);
     } catch (error) {
       console.error('Error saving workout plan:', error);
     }
@@ -64,7 +87,7 @@ const SavedWorkouts = () => {
   const handleDeleteSaved = async (savedId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3000/exercise/workout-saved/${savedId}`, {
+      await axios.delete(`${API_BASE_URL}/exercise/workout-saved/${savedId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -77,7 +100,7 @@ const SavedWorkouts = () => {
   const handleUpdateFolder = async (savedId, newFolder) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:3000/exercise/workout-saved/${savedId}`, {
+      await axios.put(`${API_BASE_URL}/exercise/workout-saved/${savedId}`, {
         folder: newFolder
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -105,16 +128,20 @@ const SavedWorkouts = () => {
       
       <div className="mb-12">
         <h2 className="text-2xl font-semibold mb-4">Available Workout Plans</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {workoutPlans.map(plan => (
-            <WorkoutPlanCard 
-              key={plan._id} 
-              plan={plan} 
-              isSaved={savedPlans.some(saved => saved.workoutPlanId === plan._id)}
-              onSave={handleSavePlan}
-            />
-          ))}
-        </div>
+        {!workoutPlans || workoutPlans.length === 0 ? (
+          <p className="text-gray-500">No workout plans available.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {workoutPlans.map(plan => (
+              <WorkoutPlanCard 
+                key={plan._id} 
+                plan={plan} 
+                isSaved={savedPlans.some(saved => saved.workoutPlanId === plan._id)}
+                onSave={handleSavePlan}
+              />
+            ))}
+          </div>
+        )}
       </div>
       
       <div>

@@ -1,184 +1,171 @@
-import DailyTarget from '../../models/dailyTarget.js';
 import User from '../../models/userModel.js';
 
 // Get user's daily nutrition targets
 export const getUserDailyTargets = async (req, res) => {
   try {
-    const dailyTarget = await DailyTarget.findOne({ user: req.user.id });
+    console.log('Getting daily nutrition targets for user:', req.user.id);
     
-    if (!dailyTarget) {
-      return res.status(404).json({ message: 'Daily targets not set up yet' });
+    // Check if user has set daily targets in their profile
+    const user = await User.findById(req.user.id);
+    
+    if (user && user.nutritionTargets) {
+      return res.json({
+        success: true,
+        data: [user.nutritionTargets]
+      });
     }
     
-    return res.json(dailyTarget);
+    // Return empty array if no targets are set
+    return res.json({
+      success: true,
+      data: []
+    });
   } catch (err) {
-    console.error(err.message);
-    return res.status(500).json({ message: 'Server Error' });
+    console.error('Error fetching daily targets:', err);
+    console.error(err.stack);
+    return res.status(500).json({
+      success: false,
+      message: 'Server Error - Failed to fetch daily nutrition targets',
+      error: err.message
+    });
   }
 };
 
 // Create or update daily nutrition targets
 export const createOrUpdateDailyTargets = async (req, res) => {
   try {
-    const {
-      bmr,
-      calorieTarget,
-      proteinTarget,
-      carbTarget,
-      fatTarget,
-      fiberTarget,
-      sugarTarget,
-      sodiumTarget,
-      waterTarget,
-      activityMultiplier
-    } = req.body;
+    console.log('Updating daily nutrition targets:', req.body);
+    const { calories, protein, carbs, fat } = req.body;
     
-    // Find existing target for user or create new one
-    let dailyTarget = await DailyTarget.findOne({ user: req.user.id });
-    
-    if (dailyTarget) {
-      // Update using modern ES6 approach
-      Object.assign(dailyTarget, {
-        ...(bmr !== undefined && { bmr }),
-        ...(calorieTarget !== undefined && { calorieTarget }),
-        ...(proteinTarget !== undefined && { proteinTarget }),
-        ...(carbTarget !== undefined && { carbTarget }),
-        ...(fatTarget !== undefined && { fatTarget }),
-        ...(fiberTarget !== undefined && { fiberTarget }),
-        ...(sugarTarget !== undefined && { sugarTarget }),
-        ...(sodiumTarget !== undefined && { sodiumTarget }),
-        ...(waterTarget !== undefined && { waterTarget }),
-        ...(activityMultiplier !== undefined && { activityMultiplier }),
-        updatedAt: Date.now()
-      });
-    } else {
-      // Create new daily target
-      dailyTarget = new DailyTarget({
-        user: req.user.id,
-        bmr,
-        calorieTarget,
-        proteinTarget,
-        carbTarget,
-        fatTarget,
-        fiberTarget,
-        sugarTarget,
-        sodiumTarget,
-        waterTarget,
-        activityMultiplier
+    // Basic validation
+    if (calories !== undefined && calories < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Calories cannot be negative'
       });
     }
     
-    await dailyTarget.save();
-    return res.json(dailyTarget);
+    // Find user and update nutrition targets
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        nutritionTargets: {
+          calories: calories || 0,
+          protein: protein || 0,
+          carbs: carbs || 0,
+          fat: fat || 0
+        }
+      },
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    return res.json({
+      success: true,
+      message: 'Daily nutrition targets updated successfully',
+      data: updatedUser.nutritionTargets
+    });
   } catch (err) {
-    console.error(err.message);
-    return res.status(500).json({ message: 'Server Error' });
+    console.error('Error updating daily targets:', err);
+    console.error(err.stack);
+    return res.status(500).json({
+      success: false,
+      message: 'Server Error - Failed to update daily nutrition targets',
+      error: err.message
+    });
   }
 };
 
-// Calculate recommended daily targets based on user profile
+// Calculate recommended targets based on user profile
 export const calculateRecommendedTargets = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     
-    if (!user.height?.value || !user.weight?.value || !user.dateOfBirth || !user.gender) {
-      return res.status(400).json({ 
-        message: 'Cannot calculate targets: Missing profile data (height, weight, age, or gender)'
+    if (!user || !user.profile) {
+      return res.status(400).json({
+        success: false,
+        message: 'User profile not complete. Please update your profile first.'
       });
     }
     
-    // Calculate age using ES6 features
-    const today = new Date();
-    const birthDate = new Date(user.dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
+    const { gender, weight, height, age, activityLevel, goal } = user.profile;
+    
+    // Simple BMR calculation using Harris-Benedict equation
+    let bmr;
+    if (gender === 'male') {
+      bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+    } else {
+      bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
     }
     
-    // Convert height/weight to metric if needed
-    const heightCm = user.height.unit === 'in' 
-      ? user.height.value * 2.54 
-      : user.height.value;
-    
-    const weightKg = user.weight.unit === 'lb' 
-      ? user.weight.value * 0.453592 
-      : user.weight.value;
-    
-    // Calculate BMR using Mifflin-St Jeor equation with template literals
-    const bmr = user.gender === 'male'
-      ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
-      : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
-    
-    // Default activity multiplier
-    const activityMultiplier = 1.2; // Sedentary
-    
-    // Calculate TDEE (Total Daily Energy Expenditure)
-    const tdee = bmr * activityMultiplier;
-    
-    // Set calorie target based on goal using improved control flow
-    let calorieTarget;
-    switch(user.nutritionGoal) {
-      case 'lose_weight':
-        calorieTarget = tdee - 500; // 500 calorie deficit
+    // Activity multiplier
+    let activityMultiplier;
+    switch (activityLevel) {
+      case 'sedentary':
+        activityMultiplier = 1.2;
         break;
-      case 'gain_weight':
-        calorieTarget = tdee + 500; // 500 calorie surplus
+      case 'light':
+        activityMultiplier = 1.375;
+        break;
+      case 'moderate':
+        activityMultiplier = 1.55;
+        break;
+      case 'active':
+        activityMultiplier = 1.725;
+        break;
+      case 'very_active':
+        activityMultiplier = 1.9;
         break;
       default:
-        calorieTarget = tdee; // maintain weight
+        activityMultiplier = 1.2;
     }
     
-    // Calculate macronutrient distribution
-    // Initial values - Protein: 30%, Carbs: 40%, Fat: 30%
-    let macroDistribution = {
-      proteinPct: 0.3,
-      carbsPct: 0.4,
-      fatPct: 0.3
-    };
+    // Calculate TDEE (Total Daily Energy Expenditure)
+    let tdee = bmr * activityMultiplier;
     
-    // Adjust macros based on diet goal
-    switch(user.nutritionGoal) {
-      case 'lose_weight':
-        macroDistribution = { proteinPct: 0.35, carbsPct: 0.35, fatPct: 0.3 };
+    // Adjust based on goal
+    let goalAdjustment;
+    switch (goal) {
+      case 'lose':
+        goalAdjustment = -500; // Caloric deficit for weight loss
         break;
-      case 'gain_weight':
-        macroDistribution = { proteinPct: 0.25, carbsPct: 0.45, fatPct: 0.3 };
+      case 'gain':
+        goalAdjustment = 500; // Caloric surplus for weight gain
         break;
+      default:
+        goalAdjustment = 0; // Maintenance
     }
     
-    // Destructure for easier access
-    const { proteinPct, carbsPct, fatPct } = macroDistribution;
+    const recommendedCalories = Math.round(tdee + goalAdjustment);
     
-    // Calculate grams of each macro
-    // Protein & carbs = 4 cal/g, fat = 9 cal/g
-    const proteinTarget = Math.round((calorieTarget * proteinPct) / 4);
-    const carbTarget = Math.round((calorieTarget * carbsPct) / 4);
-    const fatTarget = Math.round((calorieTarget * fatPct) / 9);
+    // Calculate macronutrients (example distribution)
+    // Protein: 30%, Carbs: 40%, Fat: 30%
+    const recommendedProtein = Math.round((recommendedCalories * 0.3) / 4); // 4 calories per gram of protein
+    const recommendedCarbs = Math.round((recommendedCalories * 0.4) / 4); // 4 calories per gram of carbs
+    const recommendedFat = Math.round((recommendedCalories * 0.3) / 9); // 9 calories per gram of fat
     
-    // Calculate other targets
-    const fiberTarget = Math.round(carbTarget * 0.15); // ~15% of carbs
-    const sugarTarget = Math.round(carbTarget * 0.1); // ~10% of carbs
-    const sodiumTarget = 2300; // mg, general recommendation
-    const waterTarget = Math.round(weightKg * 0.033); // L, ~33ml per kg body weight
-    
-    // Return calculated values as an object
     return res.json({
-      calculatedTargets: {
-        bmr: Math.round(bmr),
-        activityMultiplier,
-        calorieTarget: Math.round(calorieTarget),
-        proteinTarget,
-        carbTarget,
-        fatTarget,
-        fiberTarget,
-        sugarTarget,
-        sodiumTarget,
-        waterTarget
+      success: true,
+      data: {
+        calories: recommendedCalories,
+        protein: recommendedProtein,
+        carbs: recommendedCarbs,
+        fat: recommendedFat
       }
     });
   } catch (err) {
-    console.error(err.message);
-    return res.status(500).json({ message: 'Server Error' });
+    console.error('Error calculating recommended targets:', err);
+    console.error(err.stack);
+    return res.status(500).json({
+      success: false,
+      message: 'Server Error - Failed to calculate recommended targets',
+      error: err.message
+    });
   }
 };

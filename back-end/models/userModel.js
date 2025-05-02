@@ -1,5 +1,3 @@
-
-
 import { Schema, model } from 'mongoose';
 import { genSalt, hash, compare } from 'bcryptjs';
 
@@ -47,9 +45,55 @@ const UserSchema = new Schema({
     type: String,
     enum: ['lose_weight', 'maintain', 'gain_weight', 'improve_health']
   },
+  nutritionTargets: {
+    calories: {
+      type: Number,
+      default: 2000
+    },
+    protein: {
+      type: Number,
+      default: 50
+    },
+    carbs: {
+      type: Number,
+      default: 250
+    },
+    fat: {
+      type: Number,
+      default: 70
+    }
+  },
   dietaryPreferences: {
     type: [String],
     enum: ['vegetarian', 'vegan', 'gluten_free', 'dairy_free', 'keto', 'paleo', 'none']
+  },
+  profile: {
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other']
+    },
+    age: {
+      type: Number,
+      min: 0
+    },
+    weight: {
+      type: Number,
+      min: 0
+    },
+    height: {
+      type: Number,
+      min: 0
+    },
+    activityLevel: {
+      type: String,
+      enum: ['sedentary', 'light', 'moderate', 'active', 'very_active'],
+      default: 'sedentary'
+    },
+    goal: {
+      type: String,
+      enum: ['lose', 'maintain', 'gain'],
+      default: 'maintain'
+    }
   },
   createdAt: {
     type: Date,

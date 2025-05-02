@@ -4,6 +4,8 @@ import axios from 'axios';
 import ExerciseCard from '../../components/ExerciseCard';
 import SearchFilter from '../../components/SearchFilter';
 
+const API_BASE_URL = 'http://localhost:3030';
+
 const ExerciseLibrary = () => {
   const [exercises, setExercises] = useState([]);
   const [filteredExercises, setFilteredExercises] = useState([]);
@@ -15,7 +17,7 @@ const ExerciseLibrary = () => {
   useEffect(() => {
     const fetchExercises = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/exercise/exercises');
+        const response = await axios.get(`${API_BASE_URL}/exercise/exercises`);
         setExercises(response.data);
         setFilteredExercises(response.data);
         setLoading(false);

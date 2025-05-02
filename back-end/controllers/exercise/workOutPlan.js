@@ -1,4 +1,3 @@
-
 import WorkoutPlan from '../../models/workoutPlan.js';
 import Exercise from '../../models/exercises.js';
 
@@ -322,6 +321,61 @@ export const cloneWorkoutPlan = async (req, res) => {
     res.status(400).json({
       success: false,
       message: error.message
+    });
+  }
+};
+
+// Get personal workout plans
+export const getPersonalWorkoutPlans = async (req, res) => {
+  try {
+    console.log('Request user object:', JSON.stringify(req.user || {}, null, 2));
+    console.log('Request headers:', JSON.stringify(req.headers, null, 2));
+    
+    if (!req.user) {
+      console.log('No user object in request');
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required. No user found in request.'
+      });
+    }
+    
+    // Get user ID from the authenticated request
+    const userId = req.user._id || req.user.id;
+    console.log('Extracted userId:', userId);
+    
+    if (!userId) {
+      console.log('No userId found in request');
+      return res.status(401).json({
+        success: false,
+        message: 'User ID not found in request'
+      });
+    }
+    
+    // Find all workout plans created by the user
+    const personalWorkouts = await WorkoutPlan.find({ 
+      userId: userId
+    }).populate({
+      path: 'exercises.exerciseId',
+      model: 'Exercise',
+      select: 'name muscleGroup equipment difficulty description'
+    });
+    
+    console.log(`Found ${personalWorkouts.length} personal workouts for user ${userId}`);
+    
+    // Always return a consistent response format
+    return res.status(200).json({
+      success: true,
+      count: personalWorkouts.length,
+      data: personalWorkouts
+    });
+  } catch (error) {
+    console.error("Error in getPersonalWorkoutPlans:", error);
+    console.error("Error stack:", error.stack);
+    
+    // Ensure we send a valid JSON response even for errors
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Error fetching personal workouts'
     });
   }
 };

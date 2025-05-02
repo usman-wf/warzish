@@ -1,0 +1,101 @@
+.exercise-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.exercise-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.exercise-card-content {
+  padding: 1rem;
+}
+
+.exercise-card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.exercise-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.exercise-tag {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.tag-muscle {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.tag-equipment {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.tag-difficulty {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+.exercise-description {
+  color: #4b5563;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.exercise-guidance {
+  margin-top: 0.75rem;
+}
+
+.guidance-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.guidance-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.exercise-media {
+  background-color: #f9fafb;
+  padding: 1rem;
+}
+
+.media-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.media-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.media-container img,
+.media-container video {
+  height: 6rem;
+  border-radius: 0.25rem;
+  object-fit: cover;
+}
