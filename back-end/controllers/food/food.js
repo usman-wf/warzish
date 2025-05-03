@@ -147,7 +147,7 @@ export const bulkCreateFoods = async (req, res) => {
     // Add user and isCustom to each food item
     const preparedFoods = foods.map(food => ({
       ...food,
-      user:   '680bdbbf58c1fa94b816eba5',
+      user:   req.user.id,
       isCustom
     }));
     
@@ -180,7 +180,7 @@ export const updateFood = async (req, res) => {
     }
     
     // Check if user owns this food
-    if (!food.isCustom || food.user.toString() !== '680bdbbf58c1fa94b816eba5') {
+    if (!food.isCustom || food.user.toString() !== req.user.id) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     
@@ -231,7 +231,7 @@ export const deleteFood = async (req, res) => {
     }
     
     // Check if user owns this food
-    if (!food.isCustom || food.user.toString() !==  '680bdbbf58c1fa94b816eba5') {
+    if (!food.isCustom || food.user.toString() !==  req.user.id) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     

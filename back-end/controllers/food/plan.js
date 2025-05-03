@@ -4,7 +4,7 @@ import Food from '../../models/food.js';
 // Get all meal plans for a user
 export const getAllMealPlans = async (req, res) => {
   try {
-    const mealPlans = await MealPlan.find({ user: '680bdbbf58c1fa94b816eba5' })
+    const mealPlans = await MealPlan.find({ user: req.user.id })
       .sort({ updatedAt: -1 });
     
     return res.json(mealPlans);
@@ -25,7 +25,7 @@ export const getMealPlanById = async (req, res) => {
     }
     
     // Check if user owns this meal plan
-    if (mealPlan.user.toString() !== '680bdbbf58c1fa94b816eba5') {
+    if (mealPlan.user.toString() !== req.user.id) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     
@@ -51,7 +51,7 @@ export const getMealPlanNutrition = async (req, res) => {
     }
     
     // Check if user owns this meal plan
-    if (mealPlan.user.toString() !== '680bdbbf58c1fa94b816eba5') {
+    if (mealPlan.user.toString() !== req.user.id) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     
@@ -138,7 +138,7 @@ export const createMealPlan = async (req, res) => {
     }
     
     const newMealPlan = new MealPlan({
-      user: '680bdbbf58c1fa94b816eba5',
+      user: req.user.id,
       name,
       description,
       targetCalories,
@@ -238,7 +238,7 @@ export const deleteMealPlan = async (req, res) => {
     }
     
     // Check if user owns this meal plan
-    if (mealPlan.user.toString() !== '680bdbbf58c1fa94b816eba5') {
+    if (mealPlan.user.toString() !== req.user.id) {
       return res.status(401).json({ message: 'User not authorized' });
     }
     

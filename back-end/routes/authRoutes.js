@@ -1,21 +1,39 @@
 import { Router } from 'express';
-import User from '../models/userModel.js'; // Import the User model, without findOne
-import jwt from 'jsonwebtoken'; // Import as default and use jwt.sign and jwt.verify
+import User from '../models/userModel.js';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const router = Router();
 
-////ROUTE  ROUTES AS EXAMPLE : /LOCALHOST:3030/api/signup
+// Use environment variable for JWT secret or fallback to a default (for development only)
+const JWT_SECRET = 'qwertyuiodfghjklzxcvbnm1234567890'; // Should use env var in production
+
+////ROUTE  ROUTES AS EXAMPLE : /LOCALHOST:3000/api/signup
 
 router.post('/signup', async (req, res) => {
     const { name, username, email, password } = req.body;
 
     try {
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'User with this email already exists' });
+        }
+
         // Create a new user instance
         const newUser = new User({ name, username, email, password });
         // Save the user to the database
         await newUser.save();
-        // Send a success response
-        res.status(201).json({ message: 'User created successfully' });
+        
+        // Generate token for auto-login after signup
+        const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, { expiresIn: '24h' });
+        
+        // Send success response with token
+        res.status(201).json({ 
+            message: 'User created successfully',
+            token
+        });
     } catch (error) {
         // Check if the error is a validation error
         if (error.name === 'ValidationError') {
@@ -33,7 +51,6 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-       
         const user = await User.findOne({ email });
 
         if (!user || !(await user.comparePassword(password))) {
@@ -41,10 +58,17 @@ router.post('/login', async (req, res) => {
         }
 
         // Generate JWT token
-        const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '24h' });
+        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
 
         // Send token as part of the login response
-        res.status(200).json({ token });
+        res.status(200).json({ 
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email
+            }
+        });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Failed to login' });

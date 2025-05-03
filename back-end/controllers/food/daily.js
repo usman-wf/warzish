@@ -85,7 +85,7 @@ export const createOrUpdateDailyTargets = async (req, res) => {
 // Calculate recommended targets based on user profile
 export const calculateRecommendedTargets = async (req, res) => {
   try {
-    const user = await User.findById('680bdbbf58c1fa94b816eba5');
+    const user = await User.findById(req.user.id);
     
     if (!user || !user.profile) {
       return res.status(400).json({

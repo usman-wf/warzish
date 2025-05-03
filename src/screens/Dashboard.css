@@ -1,4 +1,4 @@
-.HeroBody {
+.HeroBody   {
     /* width: 100vw; */
     height: 100vh;
     display: flex;
@@ -8,18 +8,17 @@
     background-color: var(--Background-Color-Black);
 }
 
-.DashHero {
+.DashHero   {
     margin-left: var(--margin-left);
 
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-
+    
     flex: 1 0 0;
 
     width: 100%;
 }
-
 .TopRow {
     width: 100%;
     display: flex;

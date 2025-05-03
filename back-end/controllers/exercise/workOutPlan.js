@@ -18,7 +18,7 @@ export const createWorkoutPlan = async (req, res) => {
     }
     
     const newWorkoutPlan = new WorkoutPlan({
-      userId: '680bdbbf58c1fa94b816eba5', // Assuming req.user is set by auth middleware
+      userId: req.user.id, // Assuming req.user is set by auth middleware
       name,
       description,
       difficulty,
@@ -153,7 +153,7 @@ export const getWorkoutPlanById = async (req, res) => {
     }
     
     // Check if user can access this plan (if it's their own or public)
-    if (workoutPlan.userId.toString() !== '680bdbbf58c1fa94b816eba5' && !workoutPlan.isPublic) {
+    if (workoutPlan.userId.toString() !== req.user.id && !workoutPlan.isPublic) {
       return res.status(403).json({
         success: false,
         message: 'Access denied. This workout plan is private'
@@ -196,7 +196,7 @@ export const updateWorkoutPlan = async (req, res) => {
     }
     
     // Check if user is the owner
-    if (workoutPlan.userId.toString() !== '680bdbbf58c1fa94b816eba5') {
+    if (workoutPlan.userId.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'Access denied. You can only update your own workout plans'
@@ -257,7 +257,7 @@ export const deleteWorkoutPlan = async (req, res) => {
     }
     
     // Check if user is the owner
-    if (workoutPlan.userId.toString() !== '680bdbbf58c1fa94b816eba5') {
+    if (workoutPlan.userId.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'Access denied. You can only delete your own workout plans'
@@ -292,7 +292,7 @@ export const cloneWorkoutPlan = async (req, res) => {
     }
     
     // Check if user can access this plan to clone it
-    if (originalPlan.userId.toString() !== '680bdbbf58c1fa94b816eba5' && !originalPlan.isPublic) {
+    if (originalPlan.userId.toString() !== req.user.id && !originalPlan.isPublic) {
       return res.status(403).json({
         success: false,
         message: 'Access denied. This workout plan is private'

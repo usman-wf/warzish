@@ -1,90 +1,24 @@
 .navbar {
-    position: sticky;
-    top: 0;
-    display: flex;
-    flex-direction: row;
-    height: 60px;
-    width: 100%;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
-
-.navItem {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-}
-
-.navItem li {
-    margin: 0 20px;
-}
-
-.navItem li a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    color: var(--Text-Color-Black);
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.navItem li a img {
-    width: 24px;
-    height: 24px;
-    transition: transform 0.2s ease;
-    filter: brightness(0) saturate(100%) invert(10%) sepia(83%) saturate(4044%) hue-rotate(352deg) brightness(95%) contrast(94%);
-}
-
-.navItem li a:hover img {
-    transform: scale(1.15);
-}
-
-.auth-buttons {
-    margin-left: auto;
-    display: flex;
-    gap: 10px;
-}
-
-.nav-button {
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: background-color 0.3s;
-}
-
-.nav-button.login {
-    color: var(--Primary-Color-Red);
-    border: 1px solid var(--Primary-Color-Red);
-}
-
-.nav-button.login:hover {
-    background-color: rgba(118, 5, 4, 0.1);
-}
-
-.nav-button.signup {
+    width:  fit-content;
+    height: 100vh;
     background-color: var(--Primary-Color-Red);
-    color: white;
+
+    position: fixed;
 }
 
-.nav-button.signup:hover {
-    background-color: #8c0605;
+.navItem   {
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+    flex: 1 0 0;
 }
 
-@media (max-width: 768px) {
-    .navItem li {
-        margin: 0 15px;
-    }
+li  {
+    list-style-type: none;
+}
 
-    .nav-button {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
+li:hover    {
+    cursor: pointer;
 }

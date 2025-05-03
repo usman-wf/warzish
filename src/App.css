@@ -8,16 +8,11 @@ body {
   --Secondary-Color-Yellow: #fbdc6a;
   --Background-Color-Black: #222222;
   --Text-Color-Black: #090a0e;
-  --Text-Color-White: #ffffff;
-  --Background-Color-Light: #333333;
-  --Card-Background: #2a2a2a;
   
   --margin-left: 82px;
 
   margin: 0;
   padding: 0;
-  background-color: var(--Background-Color-Black);
-  color: var(--Text-Color-White);
 }
 
 .button {
@@ -39,7 +34,7 @@ body {
   line-height: normal;
 }
 .button.primary {
-  color: var(--Background-Color-Black);
+  color: var(--Text-Color-Black);
   
   border-radius: 10px;
   border: 1px solid var(--Secondary-Color-Yellow);
@@ -67,29 +62,36 @@ body {
   background-color: #4e0402;
 }
 
-/* Only apply yellow styling to login/signup inputs, not form inputs */
-.login input, .loginForm input, .signupForm input {
+input {
   display: flex;
   width: 320px;
   height: 40px;
   min-width: 320px;
   max-width: 320px;
+
   max-height: 40px;
   padding: 8px 12px;
   justify-content: space-between;
   align-items: center;
-  border-radius: 6px;
+
+  border-radius:  6px;
   border: none;
+
+  /* border: 1px solid var(--Zinc-800, #27272a); */
   background-color: var(--Yellow-300, #fde047);
+
   color: var(--Text-Color-Black);
+  
+  /* text-sm/regular */
+  /* font-family: Inter; */
 }
 
-.login input::placeholder, .loginForm input::placeholder, .signupForm input::placeholder {
+input::placeholder  {
   color: var(--Text-Color-Black);
   opacity: 75%;
 }
 
-.login input:focus, .loginForm input:focus, .signupForm input:focus {
+input:focus {
   outline-width: 0;
   border: 3px solid var(--Primary-Color-Red);
 }

@@ -25,7 +25,7 @@ export const getMealEntries = async (req, res) => {
     
     // Get all entries for the user within date range
     const mealEntries = await MealEntry.find({
-      user: '680bdbbf58c1fa94b816eba5',
+      user: req.user.id,
       date: { $gte: start, $lte: end }
     }).populate('food', 'name servingSize calories protein carbs fat');
     
@@ -64,7 +64,7 @@ export const getDailyNutritionSummary = async (req, res) => {
     const summary = await MealEntry.aggregate([
       {
         $match: {
-          user:  '680bdbbf58c1fa94b816eba5',
+          user:  req.user.id,
           date: { $gte: startOfDay, $lte: endOfDay }
         }
       },
