@@ -1,5 +1,3 @@
-
-
 import { Schema, model } from 'mongoose';
 import { genSalt, hash, compare } from 'bcryptjs';
 
@@ -20,6 +18,11 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  // Profile picture
+  profilePicture: {
+    type: String,
+    default: '/uploads/default-profile.png'
   },
   // Nutrition-specific fields
   height: {
@@ -58,7 +61,7 @@ const UserSchema = new Schema({
 });
 
 // Password hashing middleware
-UserSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
@@ -72,7 +75,7 @@ UserSchema.pre('save', async function(next) {
 });
 
 // Method to compare passwords
-UserSchema.methods.comparePassword = async function(candidatePassword) {
+UserSchema.methods.comparePassword = async function (candidatePassword) {
   return await compare(candidatePassword, this.password);
 };
 

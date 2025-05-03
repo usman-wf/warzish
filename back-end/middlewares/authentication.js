@@ -16,42 +16,27 @@ export const protect = async (req, res, next) => {
 
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Token decoded successfully:", decoded.id);
 
       // Get user from token
-      const user = await User.findById(decoded.id).select('-password');
-      
-      if (!user) {
-        console.log("No user found with ID:", decoded.id);
-        return res.status(401).json({
-          success: false,
-          message: 'User not found'
-        });
-      }
-      
-      // Set up req.user with both _id and id for compatibility
-      req.user = user;
-      
-      // Ensure id is available as a string
-      if (!req.user.id && req.user._id) {
-        req.user.id = req.user._id.toString();
-      }
-      
+      req.user = await User.findById(decoded.id).select('-password');
+
       next();
     } catch (error) {
-      console.error("Auth error:", error);
       res.status(401).json({
         success: false,
         message: 'Not authorized, token failed'
       });
     }
-  } else {
+  }
+
+  if (!token) {
     res.status(401).json({
       success: false,
       message: 'Not authorized, no token'
     });
   }
 };
+
 // Grant access to specific roles
 export const authorize = (...roles) => {
   return (req, res, next) => {

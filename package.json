@@ -10,18 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
     "axios": "^1.9.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "date-fns": "^4.1.0",
     "express": "^4.19.2",
-    "jwt-decode": "^4.0.0",
     "mongoose": "^8.3.3",
-    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-modal": "^3.16.1"
+    "react-modal": "^3.16.1",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
