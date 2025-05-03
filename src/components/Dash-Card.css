@@ -1,21 +1,60 @@
-.DashCard   {
-    padding: 4px 12px;
+.DashCard {
+    padding: 16px 24px;
     display: flex;
     flex-direction: row;
-    align-items: stretch;
+    justify-content: space-between;
+    align-items: center;
     gap: 40px;
     
     background-color: #EF4444;
-    border-radius: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    margin: 10px;
+    min-width: 200px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
 }
 
-.Wrapper-Left  .Wrapper-Right {
+.DashCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4);
+}
+
+.Wrapper-Left, .Wrapper-Right {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
-.Wrapper-Right  {
+.Wrapper-Left h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.Wrapper-Left h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.Wrapper-Right {
     align-self: center;
-    justify-self:right;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.Wrapper-Right h3 {
+    margin: 0 0 4px 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.Wrapper-Right h6 {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.8;
 }

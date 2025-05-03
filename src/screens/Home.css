@@ -8,22 +8,95 @@
     height: 100vh;
     background-color: var(--Primary-Color-Red);
     background-image: url("../assets/backgroundIcons.svg");
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    position: relative;
 }
+
+.heroBody::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 100%);
+    z-index: 1;
+}
+
 .HeroWrapper{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 50px;
 
     width: fit-content;
     height: fit-content;
+    z-index: 2;
+    padding: 20px;
+    animation: fadeIn 1s ease-in-out;
 }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .HeroBtns   {
     display: flex;
     max-width: 540px;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
     align-self: stretch;    
+}
+
+.button {
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 160px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.button.primary {
+    background-color: white;
+    color: var(--Primary-Color-Red);
+}
+
+.button.primary:hover {
+    background-color: #f8f8f8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.button.secondary {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.button.secondary:hover {
+    background-color: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+    .HeroBtns {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .button {
+        width: 100%;
+    }
 }

@@ -1,104 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 .WorkoutCard {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+  margin-bottom: 20px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   height: 100%;
   display: flex;
   flex-direction: column;
+  font-family: 'Poppins', sans-serif;
+  backdrop-filter: blur(5px);
+  color: white;
 }
 
 .WorkoutCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  border-color: var(--Primary-Color-Red);
+}
+
+.WorkoutCard:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--Primary-Color-Red), #be1e2d);
+  border-radius: 4px 0 0 4px;
+}
+
+.WorkoutCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 .WorkoutCardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .WorkoutCardCategory {
-  background-color: #e6f7ff;
-  color: #1890ff;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ff6b6b;
   font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 20px;
   font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
 }
 
 .WorkoutCardRating {
-  display: flex;
+  color: #ffd700;
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
 }
 
 .Star {
-  color: #d9d9d9;
-  margin-left: 2px;
+  opacity: 0.3;
+  transition: all 0.2s ease;
 }
 
 .Star.Filled {
-  color: #fadb14;
+  opacity: 1;
 }
 
 .WorkoutCardTitle {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: #333;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: #fff;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
 }
 
 .WorkoutCardDescription {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 15px;
-  line-height: 1.5;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 20px;
   flex-grow: 1;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .WorkoutCardFooter {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .WorkoutCardDetail {
-  color: #555;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.WorkoutCardDetail strong {
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
 }
 
 .WorkoutCardCreator {
-  font-size: 12px;
-  color: #888;
-  text-align: right;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
   font-style: italic;
+  text-align: right;
+  margin-top: 8px;
 }
 
 /* Different category colors */
-.WorkoutCard .WorkoutCardCategory:contains("Strength") {
-  background-color: #e6f7ff;
-  color: #1890ff;
+.WorkoutCard .WorkoutCardCategory[data-category="Strength"] {
+  background-color: rgba(24, 144, 255, 0.15);
+  color: #40a9ff;
 }
 
-.WorkoutCard .WorkoutCardCategory:contains("Cardio") {
-  background-color: #fff1f0;
-  color: #f5222d;
+.WorkoutCard .WorkoutCardCategory[data-category="Cardio"] {
+  background-color: rgba(245, 34, 45, 0.15);
+  color: #ff7875;
 }
 
-.WorkoutCard .WorkoutCardCategory:contains("Yoga") {
-  background-color: #f6ffed;
-  color: #52c41a;
+.WorkoutCard .WorkoutCardCategory[data-category="Yoga"] {
+  background-color: rgba(82, 196, 26, 0.15);
+  color: #73d13d;
 }
 
-.WorkoutCard .WorkoutCardCategory:contains("HIIT") {
-  background-color: #fff7e6;
-  color: #fa8c16;
+.WorkoutCard .WorkoutCardCategory[data-category="HIIT"] {
+  background-color: rgba(250, 140, 22, 0.15);
+  color: #ffc069;
 }
 
-.WorkoutCard .WorkoutCardCategory:contains("Pilates") {
-  background-color: #f9f0ff;
-  color: #722ed1;
+.WorkoutCard .WorkoutCardCategory[data-category="Pilates"] {
+  background-color: rgba(114, 46, 209, 0.15);
+  color: #b37feb;
+}
+
+/* Card Animations */
+@keyframes cardPulse {
+  0% {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
+  }
+  100% {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.WorkoutCard:hover {
+  animation: cardPulse 2s infinite;
+}
+
+@media (max-width: 768px) {
+  .WorkoutCard {
+    padding: 20px;
+  }
+  
+  .WorkoutCardTitle {
+    font-size: 18px;
+  }
+  
+  .WorkoutCardDescription {
+    font-size: 14px;
+  }
 }

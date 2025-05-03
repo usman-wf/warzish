@@ -1,474 +1,331 @@
-/* src/screens/Workout.css - Completely revamped */
+/* src/screens/Workout.css - Enhanced with better colors and typography */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 .Workout {
   display: flex;
+  flex-direction: row;
   min-height: 100vh;
-  background-color: #f5f7fa;
-  color: #1a202c;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
 }
 
 .WorkoutHero {
-  padding: 2rem;
   margin-left: var(--margin-left);
+  padding: 32px 40px;
+  flex: 1;
   width: calc(100% - var(--margin-left));
+  overflow-y: auto;
+  background-image: url("../assets/backgroundIcons.svg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-blend-mode: overlay;
 }
 
-/* Stylish header with action buttons */
 .WorkoutHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(239, 68, 68, 0.3);
 }
 
 .WorkoutHeader h1 {
-  font-size: 2rem;
+  font-size: 36px;
   font-weight: 700;
-  color: #1a202c;
   margin: 0;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  animation: fadeInDown 0.8s ease-out;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+}
+
+.WorkoutHeader h1::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: var(--Primary-Color-Red);
+  border-radius: 3px;
 }
 
 .CreateWorkoutButton {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
   display: flex;
+  padding: 14px 28px;
+  justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  gap: 10px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--Primary-Color-Red) 0%, #be1e2d 100%);
+  color: white;
   text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .CreateWorkoutButton:hover {
-  background-color: #3d8b40;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 25px rgba(239, 68, 68, 0.6);
+  background: linear-gradient(135deg, #be1e2d 0%, var(--Primary-Color-Red) 100%);
 }
 
-/* Stylish tab navigation */
 .WorkoutNav {
   display: flex;
-  border-bottom: 2px solid #e2e8f0;
-  margin-bottom: 2rem;
+  gap: 8px;
+  margin-bottom: 32px;
+  background-color: rgba(30, 30, 30, 0.8);
+  padding: 10px;
+  border-radius: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.WorkoutNav::-webkit-scrollbar {
+  display: none;
 }
 
 .WorkoutNavItem {
-  padding: 1rem 1.5rem;
-  font-weight: 600;
-  font-size: 1rem;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
   cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.5px;
 }
 
-.WorkoutNavItem:after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: transparent;
-  transition: all 0.3s ease;
+.WorkoutNavItem:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
-.WorkoutNavItem.Active {
-  color: #3b82f6;
+.WorkoutNavItem.active {
+  background: linear-gradient(135deg, var(--Primary-Color-Red) 0%, #be1e2d 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
 }
 
-.WorkoutNavItem.Active:after {
-  background-color: #3b82f6;
-}
-
-.WorkoutNavItem.Inactive {
-  color: #64748b;
-}
-
-.WorkoutNavItem.Inactive:hover {
-  color: #334155;
-}
-
-.WorkoutNavItem.Inactive:hover:after {
-  background-color: #e2e8f0;
-}
-
-/* Content area */
 .WorkoutContent {
-  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* Workout library styles */
-.WorkoutLibraryWrapper {
+.WorkoutGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
+  gap: 24px;
+  margin-top: 16px;
 }
 
-/* Loading and error states */
-.loading {
+/* Style workout cards in this context */
+.WorkoutGrid .WorkoutCard {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: white;
+}
+
+.WorkoutGrid .WorkoutCard:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateY(-5px) scale(1.02);
+}
+
+.WorkoutGrid .WorkoutCardTitle {
+  color: #fff;
+}
+
+.WorkoutGrid .WorkoutCardDescription {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.WorkoutGrid .WorkoutCardDetail {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.WorkoutGrid .WorkoutCardDetail strong {
+  color: #fff;
+}
+
+.WorkoutGrid .WorkoutCardFooter {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.WorkoutGrid .WorkoutCardCreator {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
+  min-height: 300px;
   width: 100%;
 }
 
-.loading:after {
-  content: '';
-  width: 50px;
-  height: 50px;
-  border: 5px solid #e2e8f0;
-  border-top-color: #3b82f6;
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
-  animation: spin 1s infinite linear;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
+  border-top-color: var(--Primary-Color-Red);
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
 .error-message {
-  background-color: #fee2e2;
-  border-left: 4px solid #ef4444;
-  color: #7f1d1d;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
+  background-color: rgba(239, 68, 68, 0.15);
+  border-left: 4px solid var(--Primary-Color-Red);
+  padding: 20px;
+  margin: 24px 0;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Modal styles */
+/* Modal Styles */
 .ReactModal__Overlay {
-  background-color: rgba(0, 0, 0, 0.75) !important;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+  background-color: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(5px);
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
 }
 
 .ReactModal__Content {
-  position: relative !important;
-  top: auto !important;
-  left: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  margin: auto;
-  border: none !important;
-  background: white !important;
-  overflow: auto !important;
-  border-radius: 0.75rem !important;
-  outline: none !important;
-  padding: 0 !important;
-  width: 90% !important;
-  max-width: 800px !important;
-  max-height: 90vh !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  transform: translateY(20px);
+  transition: transform 300ms ease-in-out;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+  max-width: 90% !important;
+  max-height: 90% !important;
+  margin: 0 auto !important;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%) !important;
+  padding: 30px !important;
 }
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+.ReactModal__Content--after-open {
+  transform: translateY(0);
 }
 
-.modal-header h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1a202c;
-  margin: 0;
+.ReactModal__Content--before-close {
+  transform: translateY(20px);
 }
 
-.modal-body {
-  padding: 1.5rem;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1.25rem 1.5rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.modal-close-button {
-  background-color: #f3f4f6;
-  color: #4b5563;
-  border: none;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.modal-close-button:hover {
-  background-color: #e5e7eb;
-}
-
-.modal-action-button {
-  background-color: #3b82f6;
+/* Custom button styles */
+.workout-button {
+  background: linear-gradient(135deg, var(--Primary-Color-Red) 0%, #be1e2d 100%);
   color: white;
   border: none;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.modal-action-button:hover {
-  background-color: #2563eb;
-}
-
-.modal-delete-button {
-  background-color: #ef4444;
-  color: white;
-}
-
-.modal-delete-button:hover {
-  background-color: #dc2626;
-}
-
-/* Workout card styles */
-.WorkoutCard {
-  background-color: white;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: all 0.3s ease;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.WorkoutCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-.WorkoutCardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.25rem 1.25rem 0.75rem;
-}
-
-.WorkoutCardCategory {
-  background-color: #e0f2fe;
-  color: #0284c7;
-  font-size: 0.75rem;
+  border-radius: 8px;
+  padding: 12px 20px;
   font-weight: 600;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-}
-
-.WorkoutCardRating {
-  display: flex;
-}
-
-.Star {
-  color: #d1d5db;
-  margin-left: 1px;
-}
-
-.Star.Filled {
-  color: #fbbf24;
-}
-
-.WorkoutCardTitle {
-  padding: 0 1.25rem;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1a202c;
-  margin-bottom: 0.5rem;
-}
-
-.WorkoutCardDescription {
-  padding: 0 1.25rem;
-  font-size: 0.875rem;
-  color: #4b5563;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-  flex-grow: 1;
-}
-
-.WorkoutCardFooter {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.75rem 1.25rem;
-  background-color: #f8fafc;
-}
-
-.WorkoutCardDetail {
-  font-size: 0.875rem;
-  color: #64748b;
-}
-
-.WorkoutCardDetail strong {
-  color: #334155;
-}
-
-.WorkoutCardCreator {
-  padding: 0.5rem 1.25rem;
-  font-size: 0.75rem;
-  color: #94a3b8;
-  text-align: right;
-  font-style: italic;
-  border-top: 1px solid #f1f5f9;
-}
-
-/* WorkoutDetails styles */
-.WorkoutDetails {
-  color: #1a202c;
-}
-
-.WorkoutDetailsContent h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1a202c;
-  margin-bottom: 1rem;
-}
-
-.WorkoutDescription {
-  font-size: 1rem;
-  color: #4b5563;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
-
-.WorkoutInfo {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  background-color: #f8fafc;
-  padding: 1.25rem;
-  border-radius: 0.5rem;
-  margin-bottom: 2rem;
-}
-
-.WorkoutInfo p {
-  margin: 0;
-  font-size: 0.875rem;
-  color: #64748b;
-}
-
-.WorkoutInfo p strong {
-  color: #334155;
-  font-weight: 600;
-}
-
-.ExerciseList {
-  margin-top: 2rem;
-}
-
-.ExerciseList h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1a202c;
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.Exercise {
-  background-color: #f8fafc;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  margin-bottom: 1.25rem;
-  border: 1px solid #e2e8f0;
-}
-
-.Exercise h4 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #1a202c;
-  margin-bottom: 1rem;
-}
-
-.Exercise p {
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  color: #4b5563;
-}
-
-.Exercise p strong {
-  color: #334155;
-  font-weight: 600;
-}
-
-.StartWorkoutButton {
-  margin-top: 2.5rem;
-  display: flex;
-  justify-content: center;
-}
-
-.StartWorkoutButton button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 0.875rem 2rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.StartWorkoutButton button:hover {
-  background-color: #3d8b40;
+.workout-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* SavedWorkoutsTab specific styles */
-.SavedWorkoutCard {
-  background-color: white;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
+/* Custom section styles */
+.workout-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
-.SavedWorkoutActions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1.25rem;
-  background-color: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+.workout-section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
 }
 
-.FolderSelect {
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  border: 1px solid #d1d5db;
-  font-size: 0.875rem;
-  color: #1a202c;
-  background-color: white;
-  min-width: 150px;
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.DeleteButton {
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.DeleteButton:hover {
-  background-color: #dc2626;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .WorkoutHero {
+    padding: 16px;
+  }
+  
+  .WorkoutHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .WorkoutGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .WorkoutHeader h1 {
+    font-size: 28px;
+  }
+  
+  .CreateWorkoutButton {
+    width: 100%;
+    padding: 12px 20px;
+  }
 }

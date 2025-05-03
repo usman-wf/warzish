@@ -5,7 +5,7 @@ const WorkoutCard = ({ workout, clicked }) => {
     return (
         <div className="WorkoutCard" onClick={() => clicked(workout.id)}>
             <div className="WorkoutCardHeader">
-                <div className="WorkoutCardCategory">{workout.category}</div>
+                <div className="WorkoutCardCategory" data-category={workout.category}>{workout.category}</div>
                 <div className="WorkoutCardRating">
                     {Array(5).fill().map((_, i) => (
                         <span 
@@ -21,10 +21,10 @@ const WorkoutCard = ({ workout, clicked }) => {
             <p className="WorkoutCardDescription">{workout.description}</p>
             <div className="WorkoutCardFooter">
                 <div className="WorkoutCardDetail">
-                    <strong>Duration:</strong> {workout.duration}
+                    <strong>Duration</strong> {workout.duration}
                 </div>
                 <div className="WorkoutCardDetail">
-                    <strong>Difficulty:</strong> {workout.difficulty}
+                    <strong>Difficulty</strong> {workout.difficulty}
                 </div>
             </div>
             <div className="WorkoutCardCreator">

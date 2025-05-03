@@ -118,7 +118,7 @@ const Workout = () => {
         };
         
         fetchWorkouts();
-    }, [navigate]);
+    }, [navigate, workouts.length]);
 
     const handleTabChange = (tab) => setActiveTab(tab);
 

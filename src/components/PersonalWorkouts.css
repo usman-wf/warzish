@@ -1,3 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+.personal-workouts-container {
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+}
+
+.personal-workouts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.personal-workouts-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+
+.personal-workouts-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(to right, var(--Primary-Color-Red), #be1e2d);
+  border-radius: 3px;
+}
+
+.personal-workouts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.personal-workouts-filters {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.personal-workouts-empty {
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  margin: 24px 0;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.personal-workouts-empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.personal-workouts-empty-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  max-width: 500px;
+  margin: 0 auto 20px auto;
+  line-height: 1.6;
+}
+
+.personal-workouts-create-button {
+  background: linear-gradient(135deg, var(--Primary-Color-Red) 0%, #be1e2d 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.personal-workouts-create-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+}
+
+.personal-workouts-action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.personal-workouts-action-button {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.personal-workouts-action-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.personal-workouts-action-button.primary {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ff6b6b;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.personal-workouts-action-button.primary:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+@media (max-width: 768px) {
+  .personal-workouts-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .personal-workouts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .personal-workouts-action-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .personal-workouts-action-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .WorkoutLibrary {
     display: flex;
     padding: 20px 10px 10px 10px;
