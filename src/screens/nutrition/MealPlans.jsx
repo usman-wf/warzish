@@ -205,7 +205,7 @@ const MealPlans = () => {
       </div>
     );
   }
-
+//for git purposes only
   // Check if user is authenticated for conditional rendering
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true' && localStorage.getItem('token');
 
