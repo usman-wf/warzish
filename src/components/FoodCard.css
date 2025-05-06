@@ -1,0 +1,208 @@
+.food-card {
+    background-color: var(--Card-Background, #2a2a2a);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .food-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  .food-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+  
+  .food-card-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--Secondary-Color-Yellow);
+    margin-bottom: 1.5rem;
+  }
+  
+  .food-card-serving {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #e0e0e0);
+  }
+  
+  .food-card-calories {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--Primary-Color-Red);
+    padding: 0.25rem 0.5rem;
+    background-color: rgba(118, 5, 4, 0.2);
+    border-radius: 0.25rem;
+  }
+  
+  .food-card-macros {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .food-card-macro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.375rem;
+    background-color: var(--Background-Color-Light, #333);
+    border-radius: 0.25rem;
+  }
+  
+  .macro-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary, white);
+    margin-bottom: 0.125rem;
+  }
+  
+  .macro-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #e0e0e0);
+  }
+  
+  .protein {
+    color: #2563eb;
+  }
+  
+  .carbs {
+    color: #7c3aed;
+  }
+  
+  .fat {
+    color: #dc2626;
+  }
+  
+  .food-card-category {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background-color: var(--Primary-Color-Red);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  
+  .food-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  
+  .food-card-button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .food-card-button:hover {
+    background-color: #2563eb;
+  }
+  
+  .food-card-button.secondary {
+    background-color: #f3f4f6;
+    color: #111827;
+  }
+  
+  .food-card-button.secondary:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .food-card-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .nutrition-highlights {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .nutrition-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 70px;
+  }
+  
+  .stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--Secondary-Color-Yellow);
+  }
+  
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+  
+  .expanded-details {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--Accent-Color-Gray);
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .nutrition-detail {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .detail-label {
+    color: var(--text-secondary);
+  }
+  
+  .detail-value {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  
+  .food-card-footer {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .food-card-footer .nutrition-button {
+    width: 100%;
+  }
+  
+  /* Animations */
+  .food-card.expanded {
+    transform: scale(1.02);
+    z-index: 2;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Media queries */
+  @media (max-width: 768px) {
+    .nutrition-highlights {
+      justify-content: space-around;
+    }
+  }
+  

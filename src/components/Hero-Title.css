@@ -1,0 +1,27 @@
+.Hero {
+  display: flex;
+  padding: 1.6rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  border-radius: 27px;
+  border: 4px solid var(--Secondary-Color-Yellow);
+  background: var(--Primary-Color-Red);
+}
+
+.Hero-Logo {
+  width: 186px;
+  height: 186px;
+}
+
+.Title {
+  color: var(--Secondary-Color-Yellow);
+  font-family: Antonio;
+  font-size: 72px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
+}

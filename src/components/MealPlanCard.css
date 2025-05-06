@@ -1,0 +1,323 @@
+.meal-plan-card {
+    background-color: var(--Card-Background, #2a2a2a);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .meal-plan-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+  
+  .meal-plan-card.expanded {
+    transform: scale(1.02);
+    z-index: 5;
+  }
+  
+  .meal-plan-content {
+    padding: 1rem;
+  }
+  
+  .meal-plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  .meal-plan-title {
+    color: var(--Secondary-Color-Yellow);
+    margin: 0;
+    font-size: 1.3rem;
+    flex-grow: 1;
+  }
+  
+  .meal-plan-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .meal-plan-description {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+  
+  .meal-plan-target {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 215, 0, 0.1);
+    border-radius: 4px;
+  }
+  
+  .target-label {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  
+  .target-value {
+    font-weight: 700;
+    color: var(--Secondary-Color-Yellow);
+  }
+  
+  .nutrition-summary {
+    margin-top: 1rem;
+  }
+  
+  .summary-title {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .meal-list {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--Accent-Color-Gray);
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .meals-title {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .meal-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .meal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .meal-item:last-child {
+    border-bottom: none;
+  }
+  
+  .meal-item-name {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .meal-type {
+    background-color: var(--Primary-Color-Red);
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .food-name {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  
+  .meal-quantity {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+  
+  .meal-plan-edit {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .edit-overlay {
+    background-color: var(--Background-Color-Black);
+    border-radius: 8px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .edit-overlay h3 {
+    color: var(--Secondary-Color-Yellow);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+  
+  .edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  /* Meal Plan Edit Form Styles */
+  .meal-plan-edit-form {
+    padding: 1.5rem;
+    cursor: default;
+    animation: fadeIn 0.3s ease;
+    background-color: var(--Card-Background, #2a2a2a);
+    border-radius: 0.5rem;
+  }
+  
+  .edit-form-title {
+    color: var(--Secondary-Color-Yellow);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    border-bottom: 1px solid var(--Accent-Color-Gray);
+    padding-bottom: 0.75rem;
+  }
+  
+  .meal-plan-edit-form .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  .meal-plan-edit-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  
+  .meal-plan-edit-form .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--Background-Color-Black);
+    border: 1px solid var(--Accent-Color-Gray);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  .meal-plan-edit-form .form-control:focus {
+    outline: none;
+    border-color: var(--Secondary-Color-Yellow);
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+  }
+  
+  .meal-plan-edit-form textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .meal-plan-edit-form input[type="number"].form-control {
+    -moz-appearance: textfield;
+  }
+  
+  .meal-plan-edit-form input[type="number"].form-control::-webkit-outer-spin-button,
+  .meal-plan-edit-form input[type="number"].form-control::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .edit-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--Accent-Color-Gray);
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @media (max-width: 768px) {
+    .meal-plan-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .meal-plan-actions {
+      margin-top: 1rem;
+      width: 100%;
+    }
+    
+    .meal-plan-actions button {
+      flex: 1;
+    }
+    
+    .edit-form-actions {
+      flex-direction: column;
+    }
+    
+    .edit-form-actions button {
+      width: 100%;
+    }
+  }
+  
+  .meal-plan-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .meal-plan-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+  
+  .tag-calories {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  .tag-meals {
+    background-color: #e0e7ff;
+    color: #3730a3;
+  }
+  
+  .tag-diet {
+    background-color: #fce7f3;
+    color: #9d174d;
+  }
+  
+  .save-plan-btn {
+    background-color: #4ade80;
+    color: white;
+    border: none;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .save-plan-btn:hover {
+    background-color: #3bba6b;
+  }
+  
+  .saved-badge {
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  

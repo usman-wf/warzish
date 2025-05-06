@@ -1,0 +1,105 @@
+.exercise-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.exercise-selector::-webkit-scrollbar {
+    width: 6px;
+}
+
+.exercise-selector::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.exercise-selector::-webkit-scrollbar-thumb {
+    background: var(--Accent-Color-Gray);
+    border-radius: 10px;
+}
+
+.exercise-selector::-webkit-scrollbar-thumb:hover {
+    background: var(--Secondary-Color-Yellow);
+}
+
+.exercise-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--Background-Color-Black);
+    border: 1px solid var(--Accent-Color-Gray);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.exercise-item:hover {
+    border-color: var(--Secondary-Color-Yellow);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.exercise-info h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--Secondary-Color-Yellow);
+}
+
+.exercise-info p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.add-exercise-btn {
+    display: flex;
+    align-items: center;
+    background-color: var(--Primary-Color-Red);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.add-exercise-btn:hover {
+    background-color: #8f0a09;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-right: 0.3rem;
+    line-height: 1;
+}
+
+.btn-text {
+    font-weight: 600;
+}
+
+.empty-message {
+    padding: 2rem;
+    text-align: center;
+    background-color: var(--Background-Color-Light);
+    border: 1px dashed var(--Accent-Color-Gray);
+    border-radius: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.loading-indicator {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+  

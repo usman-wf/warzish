@@ -1,0 +1,120 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --Primary-Color-Red: #760504;
+  --Secondary-Color-Yellow: #fbdc6a;
+  --Background-Color-Black: #222222;
+  --Text-Color-Black: #090a0e;
+  --Text-Color-White: #ffffff;
+  --Background-Color-Light: #333333;
+  --Card-Background: #2a2a2a;
+  --Accent-Color-Gray: #333333;
+  
+  --margin-left: 82px;
+  
+  /* Text color variables */
+  --text-primary: var(--Text-Color-White);
+  --text-secondary: #e0e0e0;
+  --text-muted: #b0b0b0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--Background-Color-Black);
+  color: var(--Text-Color-White);
+}
+
+/* Text utility classes */
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.button {
+  display: flex;
+  min-height: 40px;
+  max-height: 60px;
+  padding: var(--py-2, 8px) var(--px-4, 16px);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex: 1 0 0;
+  align-self: stretch;
+
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.button.primary {
+  color: var(--Background-Color-Black);
+  
+  border-radius: 10px;
+  border: 1px solid var(--Secondary-Color-Yellow);
+  background-color: var(--Secondary-Color-Yellow);
+}
+
+.button.secondary {
+  color: var(--Secondary-Color-Yellow);
+  font-weight: 600;
+  
+  border-radius: 10px;
+  border: 2px solid var(--Secondary-Color-Yellow);
+  background-color: var(--Primary-Color-Red);
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.button.primary:hover {
+  background-color: #fbc915;
+}
+
+.button.secondary:hover {
+  background-color: #4e0402;
+}
+
+/* Only apply yellow styling to login/signup inputs, not form inputs */
+.login input, .loginForm input, .signupForm input {
+  display: flex;
+  width: 320px;
+  height: 40px;
+  min-width: 320px;
+  max-width: 320px;
+  max-height: 40px;
+  padding: 8px 12px;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px;
+  border: none;
+  background-color: var(--Yellow-300, #fde047);
+  color: var(--Text-Color-Black);
+}
+
+.login input::placeholder, .loginForm input::placeholder, .signupForm input::placeholder {
+  color: var(--Text-Color-Black);
+  opacity: 75%;
+}
+
+.login input:focus, .loginForm input:focus, .signupForm input:focus {
+  outline-width: 0;
+  border: 3px solid var(--Primary-Color-Red);
+}
+
+a {
+  text-decoration: none;
+}

@@ -1,0 +1,75 @@
+.login {
+  display: flex;
+  background-color: var(--Background-Color-Black);
+  
+  /* width: 100vw; */
+  height: calc(100vh - 20px);
+
+  padding: 10px;
+  align-items: flex-start;
+  gap: 10px;
+  gap: 10px;
+}
+
+.loginForm {
+  display: flex;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex: 1 0 0;
+  align-self: stretch;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex: 1 0 0;
+  align-self: stretch;
+  /* margin: 10px; */
+  /* height: 95%; */
+
+  border-radius: 30px;
+  background: var(--Secondary-Color-Yellow, #fbdc6a);
+}
+
+.loginWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--10, 10px);
+  align-self: stretch;
+}
+
+.checkboxWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+}
+
+/* .checkbox {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+} */
+/* 
+.box {
+  width: 16px;
+  height: 16px;
+
+  border-radius:  6px;
+  border: 1px solid var(--Zinc-50, #fafafa);
+} */

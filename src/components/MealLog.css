@@ -1,0 +1,149 @@
+.meal-log {
+    background-color: var(--Card-Background, #2a2a2a);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .meal-log-header {
+    padding: 1rem;
+    border-bottom: 1px solid #444;
+  }
+  
+  .meal-log-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary, white);
+    margin: 0;
+  }
+  
+  .meal-log-section {
+    padding: 1rem;
+    border-bottom: 1px solid #444;
+  }
+  
+  .meal-log-section:last-child {
+    border-bottom: none;
+  }
+  
+  .meal-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  
+  .meal-section-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary, white);
+    margin: 0;
+  }
+  
+  .add-meal-button {
+    background-color: var(--Primary-Color-Red);
+    color: white;
+    border: none;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  .add-meal-button:hover {
+    background-color: #600403;
+  }
+  
+  .meal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: var(--Background-Color-Light, #333);
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .meal-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .meal-item-info {
+    flex: 1;
+  }
+  
+  .meal-item-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary, white);
+    margin: 0 0 0.125rem 0;
+  }
+  
+  .meal-item-details {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #e0e0e0);
+  }
+  
+  .meal-item-calories {
+    font-weight: 600;
+    color: var(--Secondary-Color-Yellow);
+    margin-right: 0.5rem;
+  }
+  
+  .meal-item-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .meal-action-button {
+    background-color: transparent;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+  }
+  
+  .meal-action-button:hover {
+    background-color: #e5e7eb;
+    color: #111827;
+  }
+  
+  .meal-delete-button:hover {
+    color: #dc2626;
+  }
+  
+  .meal-edit-button:hover {
+    color: #2563eb;
+  }
+  
+  .empty-meal-message {
+    text-align: center;
+    padding: 1rem 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .meal-log-footer {
+    padding: 1rem;
+    background-color: #f9fafb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .meal-log-total {
+    font-size: 0.875rem;
+    color: #111827;
+  }
+  
+  .meal-log-total span {
+    font-weight: 600;
+    color: #ef4444;
+  }
+  

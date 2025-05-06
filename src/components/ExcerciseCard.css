@@ -1,0 +1,132 @@
+.exercise-card {
+  background-color: var(--Background-Color-Black);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  border: 1px solid var(--Accent-Color-Gray);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.exercise-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  border-color: var(--Secondary-Color-Yellow);
+}
+
+.exercise-card-header {
+  padding: 1.25rem 1.25rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.exercise-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--Secondary-Color-Yellow);
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.exercise-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.exercise-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--Accent-Color-Gray);
+  color: var(--text-primary);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.difficulty-tag {
+  background-color: var(--Primary-Color-Red);
+  color: white;
+}
+
+.exercise-card-body {
+  padding: 1rem 1.25rem;
+  flex-grow: 1;
+}
+
+.exercise-description {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.exercise-guidance {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.guidance-title {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.guidance-text {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.exercise-media {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.exercise-image {
+  max-width: 100%;
+  border-radius: 4px;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.exercise-card-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.exercise-detail {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.exercise-detail strong {
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .exercise-card-footer {
+    flex-direction: column;
+  }
+}
+
+/* Text utility classes */
+.text-primary {
+  color: var(--text-primary, white) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary, #e0e0e0) !important;
+}
+
+.text-muted {
+  color: var(--text-muted, #b0b0b0) !important;
+}
+  

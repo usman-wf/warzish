@@ -1,0 +1,190 @@
+/* Workout Layout Styling */
+.workout-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--Background-Color-Black);
+  color: var(--text-primary);
+}
+
+.workout-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  margin-left: 260px; /* Space for sidebar */
+  transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .workout-main {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}
+
+/* Workout Container Styling */
+.workout-container {
+  background-color: var(--Background-Color-Light);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Workout Header */
+.workout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.workout-header h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Button Styles */
+.workout-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  text-decoration: none;
+}
+
+.workout-button.primary {
+  background-color: var(--Primary-Color-Red);
+  color: white;
+}
+
+.workout-button.primary:hover {
+  background-color: #8f0a09;
+}
+
+.workout-button.secondary {
+  background-color: var(--Accent-Color-Gray);
+  color: var(--text-primary);
+}
+
+.workout-button.secondary:hover {
+  background-color: #4a4a4a;
+}
+
+/* Grid Layout for Cards */
+.workout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .workout-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .workout-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .workout-button {
+    width: 100%;
+  }
+}
+
+/* Card Styling */
+.workout-card {
+  background-color: var(--Background-Color-Black);
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  border: 1px solid var(--Accent-Color-Gray);
+}
+
+.workout-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--Secondary-Color-Yellow);
+}
+
+.workout-card h3 {
+  color: var(--Secondary-Color-Yellow);
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.workout-card-content {
+  margin-top: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Filter and Search Area */
+.filter-container {
+  background-color: var(--Background-Color-Black);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--Accent-Color-Gray);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.filter-group select,
+.filter-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
+  background-color: var(--Background-Color-Light);
+  border: 1px solid var(--Accent-Color-Gray);
+  color: var(--text-primary);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* Add animation for loading */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.workout-container {
+  animation: fadeIn 0.3s ease;
+} 

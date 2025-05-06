@@ -1,0 +1,208 @@
+.Workout {
+  /* Keeping for backward compatibility, but using new layouts */
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  background-color: var(--Background-Color-Black);
+}
+
+/* These classes now belong to workout-main */
+.WorkoutHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.WorkoutHeader h1 {
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.CreateWorkoutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  background-color: var(--Primary-Color-Red);
+  color: white;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.CreateWorkoutButton:hover {
+  background-color: #8f0a09;
+}
+
+.WorkoutNav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--Accent-Color-Gray);
+  width: 100%;
+}
+
+.WorkoutNavItem {
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  border-radius: 5px 5px 0 0;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.WorkoutNavItem.Active {
+  background-color: transparent;
+  color: var(--Secondary-Color-Yellow);
+  border-bottom: 2px solid var(--Secondary-Color-Yellow);
+}
+
+.WorkoutContent {
+  width: 100%;
+  background-color: var(--Background-Color-Light);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal Styling */
+.ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ReactModal__Content {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  border: none !important;
+  background-color: var(--Background-Color-Black) !important;
+  border-radius: 10px !important;
+  padding: 1.5rem !important;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--Accent-Color-Gray);
+}
+
+.modal-header h2 {
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal-close-button {
+  background-color: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.modal-close-button:hover {
+  color: var(--Primary-Color-Red);
+}
+
+.modal-body {
+  padding: 1rem 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--Accent-Color-Gray);
+}
+
+.modal-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  background-color: var(--Primary-Color-Red);
+  color: white;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.modal-action-button:hover {
+  background-color: #8f0a09;
+}
+
+.modal-delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  background-color: #d10000;
+  color: white;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-delete-button:hover {
+  background-color: #b00000;
+}
+
+/* Loading and Error States */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--Primary-Color-Red);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  color: var(--Primary-Color-Red);
+  text-align: center;
+  padding: 2rem;
+  background-color: rgba(209, 0, 0, 0.1);
+  border-radius: 5px;
+  margin: 1rem 0;
+}
