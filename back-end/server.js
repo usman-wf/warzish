@@ -4,6 +4,7 @@ import { router, authenticateToken } from './routes/authRoutes.js';
 import exerciseRouter from './routes/exercise.js';
 import foodRouter from './routes/food.js';
 import profileRouter from './routes/profileRoutes.js';
+import tweetRouter from './routes/tweetRoutes.js'; // Import the new tweet routes
 
 import dotenv from 'dotenv';
 dotenv.config({ path: './config/config.env' }); // Load environment variables from config.env file
@@ -14,7 +15,7 @@ const app = express();
 
 // Configure CORS before any middleware runs
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -46,6 +47,7 @@ app.get('/verify-token', authenticateToken, (req, res) => {
 });
 
 app.use('/api', router);
+app.use('/api', tweetRouter); // Add the tweet routes
 app.use('/exercise', exerciseRouter)
 app.use('/food', foodRouter);
 app.use('/api/user', profileRouter);
@@ -66,7 +68,7 @@ app.use((req, res) => {
 });
 
 // Global error handler
-app.use((err, req, res) => {
+app.use((err, req, res, next) => { // Added 'next' parameter to fix the error handler
   console.error('Server error:', err);
   res.status(500).json({ error: 'Server error', message: err.message });
 });
@@ -86,6 +88,3 @@ async function startServer() {
 }
 
 startServer();
-
-
-

@@ -31,6 +31,13 @@ const Sidebar = () => {
             ]
         },
         {
+            category: 'Suggestion',
+            items: [
+                { path: '/nutrition', label: 'Nutrition Suggestion', icon: 'restaurant_menu' },
+                { path: '/discussion-form', label: 'Discussion Form', icon: 'forum' },
+            ]
+        },
+        {
             category: 'Goals & Progress',
             items: [
                 { path: '/goals', label: 'Fitness Goals', icon: 'flag' },

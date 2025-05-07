@@ -22,6 +22,9 @@ import SavedWorkouts from './screens/workout/SavedWorkouts';
 import CalorieTracking from './screens/nutrition/CalorieTracking';
 import MealPlans from './screens/nutrition/MealPlans';
 import FoodDatabase from './screens/nutrition/FoodDatabase';
+import NutritionPage from './components/NutritionPage';
+import NutritionCalculate from './components/NutritionCalculate';
+import DiscussionForm from './components/DiscussionForm';
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
@@ -59,6 +62,9 @@ function App() {
         <Route path="nutrition/calorie-tracking" element={<ProtectedRoute><CalorieTracking /></ProtectedRoute>} />
         <Route path="nutrition/meal-plans" element={<ProtectedRoute><MealPlans /></ProtectedRoute>} />
         <Route path="nutrition/food-database" element={<ProtectedRoute><FoodDatabase /></ProtectedRoute>} />
+        <Route path="nutrition" element={<ProtectedRoute><NutritionPage /></ProtectedRoute>} />
+        <Route path="nutrition-calculate" element={<ProtectedRoute><NutritionCalculate /></ProtectedRoute>} />
+        <Route path="discussion-form" element={<ProtectedRoute><DiscussionForm /></ProtectedRoute>} />
 
         {/* Legacy routes for backward compatibility */}
         <Route path="exercise-library" element={<Navigate to="/workout/exercise-library" replace />} />

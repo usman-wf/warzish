@@ -1,0 +1,198 @@
+.nutrition-wrapper {
+  padding: 20px;
+  background-color: var(--Background-Color);
+  min-height: 100vh;
+}
+
+.nutrition-main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nutrition-body {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  background-color: var(--Card-Background);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nutrition-left {
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.nutrition-left h2 {
+  color: var(--Text-Color-White);
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--Text-Color-White);
+  font-weight: 500;
+}
+
+.form-group select,
+.form-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background-color: #2c2c2c;
+  color: var(--Text-Color-White);
+  font-size: 1rem;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+  outline: none;
+  border-color: var(--Primary-Color-Red);
+}
+
+.calculate-btn {
+  background-color: var(--Primary-Color-Red);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.calculate-btn:hover {
+  background-color: #8c0605;
+}
+
+.nutrition-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.nutrition-right img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+}
+
+.nutrition-right p {
+  color: var(--Text-Color-White);
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.nutrition-importance-section {
+  background-color: var(--Card-Background);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nutrition-importance-left {
+  margin-bottom: 2rem;
+}
+
+.nutrition-importance-left h1 {
+  color: var(--Text-Color-White);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.nutrition-importance-left p {
+  color: var(--Text-Color-White);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.nutrient-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.nutrient-type {
+  background-color: #2c2c2c;
+  padding: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.nutrition-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.nutrient-type strong {
+  display: block;
+  color: var(--Text-Color-White);
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.nutrient-type p {
+  color: #ccc;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.nutrient-highlight {
+  font-weight: 600;
+}
+
+.nutrient-highlight.starchy {
+  color: #fcd34d;
+}
+
+.nutrient-highlight.sugar {
+  color: #f87171;
+}
+
+.nutrient-highlight.fibre {
+  color: #34d399;
+}
+
+.nutrient-highlight.fat {
+  color: #60a5fa;
+}
+
+.nutrient-highlight.protein {
+  color: #a78bfa;
+}
+
+.nutrient-highlight.vitamins {
+  color: #f472b6;
+}
+
+@media (max-width: 768px) {
+  .nutrition-body {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .nutrition-left {
+    padding-right: 0;
+  }
+
+  .nutrient-types-grid {
+    grid-template-columns: 1fr;
+  }
+}
