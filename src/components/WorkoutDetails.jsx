@@ -1,10 +1,177 @@
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useState, useEffect } from "react";
+
+const API_BASE_URL = 'http://localhost:3030';
 
 const WorkoutDetails = ({ workout }) => {
+    const navigate = useNavigate();
+    const userId = localStorage.getItem('userId');
+    const workoutId = workout._id || workout.id;
+    const isOwner = userId && workout.userId === userId;
+    const isPublic = workout.isPublic || false; // Default to false if not specified
+    const [isSaved, setIsSaved] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+
+    useEffect(() => {
+        // Check if the workout is already saved
+        const checkIfSaved = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token || !workoutId) return;
+                
+                const response = await axios.get(`${API_BASE_URL}/exercise/workout-saved`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                
+                const savedWorkouts = response.data.data || [];
+                const isAlreadySaved = savedWorkouts.some(saved => {
+                    const savedWorkoutId = saved.workoutId || (saved.workoutPlan && saved.workoutPlan._id);
+                    return savedWorkoutId === workoutId;
+                });
+                
+                setIsSaved(isAlreadySaved);
+            } catch (error) {
+                console.error('Error checking saved status:', error);
+            }
+        };
+        
+        checkIfSaved();
+    }, [workoutId]);
+
+    const handleDeleteWorkout = async () => {
+        if (!workoutId) {
+            toast.error('Cannot delete: Missing workout ID');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`${API_BASE_URL}/exercise/workout/${workoutId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            toast.success('Workout deleted successfully');
+            navigate('/workout/saved-workouts');
+        } catch (error) {
+            console.error('Error deleting workout:', error);
+            toast.error('Failed to delete workout');
+        }
+    };
+
+    const handleSaveWorkout = async (event) => {
+        event.preventDefault(); // Prevent any default form submission
+        console.log("Save button clicked");
+        
+        if (!workoutId) {
+            toast.error('Cannot save: Missing workout ID');
+            return;
+        }
+        
+        // Check if this is a sample workout (with ID like 'sample-1')
+        if (workoutId && workoutId.toString().startsWith('sample-')) {
+            toast.warning('Sample workouts cannot be saved. Real workouts can be saved once you create them!');
+            return;
+        }
+
+        try {
+            setIsSaving(true);
+            toast.info('Saving workout...'); // Immediate feedback
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                toast.error('Authentication token not found. Please log in again.');
+                setIsSaving(false);
+                return;
+            }
+            
+            console.log('Saving workout with ID:', workoutId);
+            console.log('Request headers:', { Authorization: `Bearer ${token.substring(0, 10)}...` });
+            console.log('Request payload:', { workoutPlanId: workoutId });
+            
+            const response = await axios.post(
+                `${API_BASE_URL}/exercise/workout-saved`, 
+                { workoutPlanId: workoutId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            
+            console.log('Save response:', response.data);
+            setIsSaved(true);
+            toast.success('Workout saved successfully');
+        } catch (error) {
+            console.error('Error saving workout:', error);
+            
+            if (error.response) {
+                console.error('Response status:', error.response.status);
+                console.error('Response data:', error.response.data);
+                
+                // Handle specific error cases
+                if (error.response.status === 400 && 
+                    error.response.data?.message?.includes('already saved')) {
+                    toast.info('You have already saved this workout');
+                    setIsSaved(true);
+                } else if (error.response.status === 400 && 
+                    error.response.data?.message?.includes('Cast to ObjectId failed')) {
+                    toast.warning('This sample workout cannot be saved. Create your own workouts instead!');
+                } else {
+                    toast.error(`Failed to save: ${error.response.data.message || error.response.statusText}`);
+                }
+            } else if (error.request) {
+                console.error('No response received:', error.request);
+                toast.error('No response from server. Please check your connection.');
+            } else {
+                console.error('Request error:', error.message);
+                toast.error(`Error: ${error.message}`);
+            }
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     return (
         <div className="WorkoutDetails">
             <div className="WorkoutDetailsContent">
-                <h2>{workout.title || workout.name}</h2>
+                <div className="WorkoutHeader">
+                    <h2>{workout.title || workout.name}</h2>
+                    <div className="WorkoutActions">
+                        {isPublic && !isOwner && !isSaved && (
+                            <button 
+                                onClick={handleSaveWorkout}
+                                className="workout-button primary"
+                                disabled={isSaving}
+                                style={{
+                                    opacity: isSaving ? 0.7 : 1,
+                                    cursor: isSaving ? 'not-allowed' : 'pointer',
+                                }}
+                            >
+                                {isSaving ? 'Saving...' : 'Save Workout'}
+                            </button>
+                        )}
+                        {isPublic && !isOwner && isSaved && (
+                            <div className="saved-status">
+                                ✓ Workout Saved
+                            </div>
+                        )}
+                        {isOwner && !isPublic && (
+                            <>
+                                <button 
+                                    onClick={() => navigate(`/workout/create?edit=${workoutId}`)}
+                                    className="workout-button primary"
+                                >
+                                    Edit
+                                </button>
+                                <button 
+                                    onClick={handleDeleteWorkout}
+                                    className="workout-button danger"
+                                >
+                                    Delete
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
                 <p className="WorkoutDescription">{workout.description}</p>
                 
                 <div className="WorkoutInfo">
@@ -81,6 +248,7 @@ const WorkoutDetails = ({ workout }) => {
 WorkoutDetails.propTypes = {
     workout: PropTypes.shape({
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        _id: PropTypes.string,
         title: PropTypes.string,
         name: PropTypes.string,
         description: PropTypes.string.isRequired,
@@ -93,6 +261,8 @@ WorkoutDetails.propTypes = {
         tags: PropTypes.arrayOf(PropTypes.string),
         exercises: PropTypes.array,
         additionalInfo: PropTypes.string,
+        userId: PropTypes.string,
+        isPublic: PropTypes.bool
     }).isRequired,
 };
 

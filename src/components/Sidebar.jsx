@@ -17,7 +17,7 @@ const Sidebar = () => {
         {
             category: 'Workouts',
             items: [
-                { path: '/workout/saved-workouts', label: 'My Workouts', icon: 'fitness_center' },
+                { path: '/workout', label: 'My Workouts', icon: 'fitness_center' },
                 { path: '/workout/exercise-library', label: 'Exercise Library', icon: 'list' },
                 { path: '/workout/create', label: 'Create Workout', icon: 'add' },
             ]

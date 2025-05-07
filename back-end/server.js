@@ -66,9 +66,23 @@ app.use((req, res) => {
 });
 
 // Global error handler
-app.use((err, req, res) => {
+app.use((err, req, res, _next) => {
   console.error('Server error:', err);
-  res.status(500).json({ error: 'Server error', message: err.message });
+  console.error('Error stack:', err.stack);
+  console.error('Request path:', req.path);
+  console.error('Request method:', req.method);
+  console.error('Request body:', JSON.stringify(req.body, null, 2));
+  
+  // Ensure we have a valid response status
+  const status = res.statusCode !== 200 ? res.statusCode : 500;
+  
+  // Send proper error response
+  res.status(status).json({ 
+    error: 'Server error', 
+    message: err.message,
+    path: req.path,
+    method: req.method
+  });
 });
 
 // Connect to MongoDB using Mongoose:

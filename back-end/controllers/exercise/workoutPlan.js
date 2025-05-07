@@ -1,284 +1,159 @@
 import WorkoutPlan from '../../models/workoutPlan.js';
-import Exercise from '../../models/exercises.js';
+import SavedWorkout from '../../models/savedWorkout.js';
+import { AppError } from '../../utils/appError.js';
 
 // Create a new workout plan
-export const createWorkoutPlan = async (req, res) => {
+export const createWorkoutPlan = async (req, res, next) => {
   try {
-    const { name, description, difficulty, estimatedDuration, exercises, isPublic, tags } = req.body;
-    
-    // Validate that all exercise IDs exist
-    const exerciseIds = exercises.map(ex => ex.exerciseId);
-    const existingExercises = await Exercise.find({ _id: { $in: exerciseIds } });
-    
-    if (existingExercises.length !== exerciseIds.length) {
-      return res.status(400).json({
-        success: false,
-        message: 'One or more exercise IDs are invalid'
-      });
-    }
-    
-    const newWorkoutPlan = new WorkoutPlan({
-      userId: req.user.id, // Assuming req.user is set by auth middleware
-      name,
-      description,
-      difficulty,
-      estimatedDuration,
-      exercises,
-      isPublic,
-      tags
-    });
-    
-    const savedWorkoutPlan = await newWorkoutPlan.save();
+    const workoutData = {
+      ...req.body,
+      userId: req.user._id,
+      isPublic: false // Default to personal workout
+    };
+
+    const workout = await WorkoutPlan.create(workoutData);
     
     res.status(201).json({
-      success: true,
-      data: savedWorkoutPlan
+      status: 'success',
+      data: workout
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(new AppError('Failed to create workout plan', 500));
   }
 };
 
-
-export const getUserWorkoutPlans = async (req, res) => {
+// Get all public workout plans
+export const getPublicWorkoutPlans = async (req, res, next) => {
   try {
-    const { tags, difficulty, search, page = 1, limit = 10 } = req.query;
-    console.log("FETCHING WORKOUT PLANS");
-    
-    // Check if user object exists and has an ID
-    if (!req.user || (!req.user.id && !req.user._id)) {
-      console.error('Authentication error: User identity not found in request', req.user);
-      return res.status(401).json({
-        success: false,
-        message: 'Authentication error: User identity not found'
-      });
-    }
-    
-    // Extract user ID from req.user (could be in .id or ._id)
-    const userId = req.user.id || req.user._id;
-    console.log("Using user ID:", userId);
-    
-    // Build filter object
-    const filter = { userId: userId };
-    
-    if (difficulty) filter.difficulty = difficulty;
-    if (tags) {
-      const tagArray = tags.split(',').map(tag => tag.trim());
-      filter.tags = { $in: tagArray };
-    }
-    if (search) {
-      filter.$text = { $search: search };
-    }
-    
-    // Calculate pagination
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    const workoutPlans = await WorkoutPlan.find(filter)
-      .skip(skip)
-      .limit(parseInt(limit))
+    const publicWorkouts = await WorkoutPlan.find({ isPublic: true })
+      .populate('exercises.exerciseId')
       .sort({ createdAt: -1 });
     
-    const total = await WorkoutPlan.countDocuments(filter);
-    
     res.status(200).json({
-      success: true,
-      count: workoutPlans.length,
-      total,
-      totalPages: Math.ceil(total / parseInt(limit)),
-      currentPage: parseInt(page),
-      data: workoutPlans
+      status: 'success',
+      data: publicWorkouts
     });
   } catch (error) {
-    console.error("Error in getUserWorkoutPlans:", error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
-// Get all workout plans for the current user
-// export const getUserWorkoutPlans = async (req, res) => {
-//   try {
-//     const { tags, difficulty, search, page = 1, limit = 10 } = req.query;
-//     console.log("FETCHING WORKOUT PLANS");
-//     // Build filter object
-//      console.log(req.user);
-//     console.log(req.user.id);
-//     const filter = { userId: req.user.id };
-    
-//     if (difficulty) filter.difficulty = difficulty;
-//     if (tags) {
-//       const tagArray = tags.split(',').map(tag => tag.trim());
-//       filter.tags = { $in: tagArray };
-//     }
-//     if (search) {
-//       filter.$text = { $search: search };
-//     }
-    
-//     // Calculate pagination
-//     const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-//     const workoutPlans = await WorkoutPlan.find(filter)
-//       .skip(skip)
-//       .limit(parseInt(limit))
-//       .sort({ createdAt: -1 });
-    
-//     const total = await WorkoutPlan.countDocuments(filter);
-    
-//     res.status(200).json({
-//       success: true,
-//       count: workoutPlans.length,
-//       total,
-//       totalPages: Math.ceil(total / parseInt(limit)),
-//       currentPage: parseInt(page),
-//       data: workoutPlans
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message
-//     });
-//   }
-// };
-
-// Get workout plan by ID
-export const getWorkoutPlanById = async (req, res) => {
-  try {
-    const workoutPlan = await WorkoutPlan.findById(req.params.id);
-    
-    if (!workoutPlan) {
-      return res.status(404).json({
-        success: false,
-        message: 'Workout plan not found'
-      });
-    }
-    
-    // Check if user can access this plan (if it's their own or public)
-    if (workoutPlan.userId.toString() !== req.user.id && !workoutPlan.isPublic) {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied. This workout plan is private'
-      });
-    }
-    
-    // Populate exercise details
-    const populatedWorkoutPlan = await WorkoutPlan.findById(req.params.id)
-      .populate({
-        path: 'exercises.exerciseId',
-        model: 'Exercise',
-        select: 'name muscleGroup equipment difficulty description formGuidance mediaUrls'
-      });
-    
-    res.status(200).json({
-      success: true,
-      data: populatedWorkoutPlan
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    next(new AppError('Failed to fetch public workouts', 500));
   }
 };
 
-// Update workout plan
-export const updateWorkoutPlan = async (req, res) => {
+// Get a specific public workout plan
+export const getPublicWorkoutPlanById = async (req, res, next) => {
   try {
-    const { name, description, difficulty, estimatedDuration, exercises, isPublic, tags } = req.body;
-    
-    // Find the workout plan
-    const workoutPlan = await WorkoutPlan.findById(req.params.id);
-    
-    if (!workoutPlan) {
-      return res.status(404).json({
-        success: false,
-        message: 'Workout plan not found'
-      });
+    const workout = await WorkoutPlan.findOne({
+      _id: req.params.id,
+      isPublic: true
+    }).populate('exercises.exerciseId');
+
+    if (!workout) {
+      return next(new AppError('Public workout not found', 404));
     }
+
+    res.status(200).json({
+      status: 'success',
+      data: workout
+    });
+  } catch (error) {
+    next(new AppError('Failed to fetch public workout', 500));
+  }
+};
+
+// Get user's personal workout plans
+export const getUserWorkoutPlans = async (req, res, next) => {
+  try {
+    const workouts = await WorkoutPlan.find({ 
+      userId: req.user._id,
+      isPublic: false 
+    })
+      .populate('exercises.exerciseId')
+      .sort({ createdAt: -1 });
     
-    // Check if user is the owner
-    if (workoutPlan.userId.toString() !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied. You can only update your own workout plans'
-      });
+    res.status(200).json({
+      status: 'success',
+      data: workouts
+    });
+  } catch (error) {
+    next(new AppError('Failed to fetch user workouts', 500));
+  }
+};
+
+// Get a specific workout plan
+export const getWorkoutPlanById = async (req, res, next) => {
+  try {
+    const workout = await WorkoutPlan.findOne({
+      _id: req.params.id,
+      $or: [
+        { userId: req.user._id },
+        { isPublic: true }
+      ]
+    }).populate('exercises.exerciseId');
+
+    if (!workout) {
+      return next(new AppError('Workout not found', 404));
     }
-    
-    // If exercises are updated, validate all exercise IDs
-    if (exercises && exercises.length > 0) {
-      const exerciseIds = exercises.map(ex => ex.exerciseId);
-      const existingExercises = await Exercise.find({ _id: { $in: exerciseIds } });
-      
-      if (existingExercises.length !== exerciseIds.length) {
-        return res.status(400).json({
-          success: false,
-          message: 'One or more exercise IDs are invalid'
-        });
-      }
+
+    res.status(200).json({
+      status: 'success',
+      data: workout
+    });
+  } catch (error) {
+    next(new AppError('Failed to fetch workout', 500));
+  }
+};
+
+// Update a workout plan
+export const updateWorkoutPlan = async (req, res, next) => {
+  try {
+    const workout = await WorkoutPlan.findOne({
+      _id: req.params.id,
+      userId: req.user._id,
+      isPublic: false // Only allow updates to personal workouts
+    });
+
+    if (!workout) {
+      return next(new AppError('Workout not found or not authorized to update', 404));
     }
-    
-    // Update the workout plan
-    const updatedWorkoutPlan = await WorkoutPlan.findByIdAndUpdate(
+
+    const updatedWorkout = await WorkoutPlan.findByIdAndUpdate(
       req.params.id,
-      {
-        name,
-        description,
-        difficulty,
-        estimatedDuration,
-        exercises,
-        isPublic,
-        tags,
-        updatedAt: Date.now()
-      },
+      req.body,
       { new: true, runValidators: true }
-    );
-    
+    ).populate('exercises.exerciseId');
+
     res.status(200).json({
-      success: true,
-      data: updatedWorkoutPlan
+      status: 'success',
+      data: updatedWorkout
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(new AppError('Failed to update workout plan', 500));
   }
 };
 
-// Delete workout plan
-export const deleteWorkoutPlan = async (req, res) => {
+// Delete a workout plan
+export const deleteWorkoutPlan = async (req, res, next) => {
   try {
-    const workoutPlan = await WorkoutPlan.findById(req.params.id);
-    
-    if (!workoutPlan) {
-      return res.status(404).json({
-        success: false,
-        message: 'Workout plan not found'
-      });
+    const workout = await WorkoutPlan.findOne({
+      _id: req.params.id,
+      userId: req.user._id,
+      isPublic: false // Only allow deletion of personal workouts
+    });
+
+    if (!workout) {
+      return next(new AppError('Workout not found or not authorized to delete', 404));
     }
-    
-    // Check if user is the owner
-    if (workoutPlan.userId.toString() !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied. You can only delete your own workout plans'
-      });
-    }
-    
+
     await WorkoutPlan.findByIdAndDelete(req.params.id);
-    
-    res.status(200).json({
-      success: true,
-      message: 'Workout plan deleted successfully'
+
+    // Also remove from saved workouts if it exists
+    await SavedWorkout.deleteMany({ workoutId: req.params.id });
+
+    res.status(204).json({
+      status: 'success',
+      data: null
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    next(new AppError('Failed to delete workout plan', 500));
   }
 };
 

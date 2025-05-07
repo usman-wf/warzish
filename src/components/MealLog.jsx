@@ -10,7 +10,7 @@ const MealLog = ({ meals, foods, onAddMeal, onUpdateMeal, onDeleteMeal }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [activeMealType, setActiveMealType] = useState(null);
 
-  const mealTypes = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
+  const mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
   
   const getFoodName = (foodId) => {
     // Handle both foodId and food reference objects
@@ -24,8 +24,7 @@ const MealLog = ({ meals, foods, onAddMeal, onUpdateMeal, onDeleteMeal }) => {
     if (!type) return '';
     // Convert to lowercase for comparison
     const normalized = type.toLowerCase();
-    // Handle both singular and plural forms
-    if (normalized === 'snacks') return 'snack';
+    // We no longer need to handle 'snacks' since it's removed
     return normalized;
   };
   
@@ -136,6 +135,7 @@ const MealLog = ({ meals, foods, onAddMeal, onUpdateMeal, onDeleteMeal }) => {
             {meals.filter(meal => {
               const normalizedMealType = normalizeMealType(meal.mealType);
               const normalizedType = normalizeMealType(type);
+              // Simplified filter without snacks handling
               return normalizedMealType === normalizedType;
             }).map(meal => (
               <div key={getMealId(meal)} className="flex justify-between items-center border-b py-2">
@@ -163,6 +163,7 @@ const MealLog = ({ meals, foods, onAddMeal, onUpdateMeal, onDeleteMeal }) => {
             {meals.filter(meal => {
               const normalizedMealType = normalizeMealType(meal.mealType);
               const normalizedType = normalizeMealType(type);
+              // Simplified filter without snacks handling
               return normalizedMealType === normalizedType;
             }).length === 0 && (
               <p className="text-gray-500 text-sm py-2">No {type.toLowerCase()} entries yet.</p>

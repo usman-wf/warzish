@@ -20,6 +20,8 @@ const Workout = () => {
     const [workouts, setWorkouts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [savedWorkoutIds, setSavedWorkoutIds] = useState([]);
+    const [isSaving, setIsSaving] = useState(null);
 
     useEffect(() => {
         // Check if user is authenticated
@@ -63,6 +65,25 @@ const Workout = () => {
         } catch (e) {
             console.error('Error decoding token:', e);
         }
+
+        // Fetch saved workouts to detect which ones are already saved
+        const fetchSavedWorkouts = async () => {
+            try {
+                const savedResponse = await axios.get(`${API_BASE_URL}/exercise/workout-saved`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const savedWorkouts = savedResponse.data.data || [];
+                const savedIds = savedWorkouts.map(workout => 
+                    workout.workoutId || (workout.workoutPlan && workout.workoutPlan._id)
+                ).filter(Boolean);
+                setSavedWorkoutIds(savedIds);
+                console.log('Saved workout IDs:', savedIds);
+            } catch (error) {
+                console.error('Error fetching saved workouts:', error);
+            }
+        };
+
+        fetchSavedWorkouts();
 
         const fetchWorkouts = async () => {
             try {
@@ -286,6 +307,76 @@ const Workout = () => {
         }
     };
 
+    const handleSaveWorkout = async (workoutId) => {
+        try {
+            setIsSaving(workoutId);
+            
+            // Check if this is a sample workout (with ID like 'sample-1')
+            if (workoutId && workoutId.toString().startsWith('sample-')) {
+                toast.warning('Sample workouts cannot be saved. Real workouts can be saved once you create them!');
+                setIsSaving(null);
+                return;
+            }
+            
+            toast.info('Saving workout...');
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                toast.error('Authentication token not found. Please log in again.');
+                setIsSaving(null);
+                return;
+            }
+            
+            console.log('Saving workout with ID:', workoutId);
+            console.log('Request headers:', { Authorization: `Bearer ${token.substring(0, 10)}...` });
+            console.log('Request payload:', { workoutPlanId: workoutId });
+            
+            const response = await axios.post(
+                `${API_BASE_URL}/exercise/workout-saved`, 
+                { workoutPlanId: workoutId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            
+            console.log('Save response:', response.data);
+            setSavedWorkoutIds(prev => [...prev, workoutId]);
+            toast.success('Workout saved successfully');
+
+            // Close modal after saving successfully
+            if (selectedWorkout && selectedWorkout._id === workoutId) {
+                closeModal();
+            }
+        } catch (error) {
+            console.error('Error saving workout:', error);
+            
+            if (error.response) {
+                console.error('Response status:', error.response.status);
+                console.error('Response data:', error.response.data);
+                
+                // Handle specific error cases
+                if (error.response.status === 400 && 
+                    error.response.data?.message?.includes('already saved')) {
+                    toast.info('You have already saved this workout');
+                    setSavedWorkoutIds(prev => 
+                        prev.includes(workoutId) ? prev : [...prev, workoutId]
+                    );
+                } else if (error.response.status === 400 && 
+                    error.response.data?.message?.includes('Cast to ObjectId failed')) {
+                    toast.warning('This sample workout cannot be saved. Create your own workouts instead!');
+                } else {
+                    toast.error(`Failed to save: ${error.response.data.message || error.response.statusText}`);
+                }
+            } else if (error.request) {
+                console.error('No response received:', error.request);
+                toast.error('No response from server. Please check your connection.');
+            } else {
+                console.error('Request error:', error.message);
+                toast.error(`Error: ${error.message}`);
+            }
+        } finally {
+            setIsSaving(null);
+        }
+    };
+
     const renderTabContent = () => {
         if (loading) {
             return <div className="loading-container"><div className="loading-spinner"></div></div>;
@@ -371,18 +462,35 @@ const Workout = () => {
                     <div className="modal-footer">
                         {selectedWorkout && (
                             <>
-                                <button 
-                                    className="modal-delete-button" 
-                                    onClick={() => {
-                                        deleteWorkout(selectedWorkout.id);
-                                        // closeModal() will be called after deletion in the deleteWorkout function
-                                    }}
-                                >
-                                    Delete Workout
-                                </button>
-                                <Link to={`/workout/create?edit=${selectedWorkout.id}`} className="modal-action-button">
-                                    Edit Workout
-                                </Link>
+                                {activeTab === "Personal" && (
+                                    <>
+                                        <button 
+                                            className="modal-delete-button" 
+                                            onClick={() => {
+                                                deleteWorkout(selectedWorkout.id);
+                                                // closeModal() will be called after deletion in the deleteWorkout function
+                                            }}
+                                        >
+                                            Delete Workout
+                                        </button>
+                                        <Link to={`/workout/create?edit=${selectedWorkout.id}`} className="modal-action-button">
+                                            Edit Workout
+                                        </Link>
+                                    </>
+                                )}
+                                {activeTab === "Library" && !savedWorkoutIds.includes(selectedWorkout._id || selectedWorkout.id) && (
+                                    <button 
+                                        className="modal-action-button"
+                                        onClick={() => handleSaveWorkout(selectedWorkout._id || selectedWorkout.id)}
+                                        disabled={isSaving === (selectedWorkout._id || selectedWorkout.id)}
+                                        style={{
+                                            opacity: isSaving === (selectedWorkout._id || selectedWorkout.id) ? 0.7 : 1,
+                                            cursor: isSaving === (selectedWorkout._id || selectedWorkout.id) ? 'not-allowed' : 'pointer',
+                                        }}
+                                    >
+                                        {isSaving === (selectedWorkout._id || selectedWorkout.id) ? 'Saving...' : 'Save Workout'}
+                                    </button>
+                                )}
                             </>
                         )}
                     </div>

@@ -10,8 +10,14 @@ const NutritionSummary = ({ meals, foods, dailyPlan }) => {
     return null;
   };
 
-  // Calculate totals from meals
-  const totals = meals.reduce((acc, meal) => {
+  // Filter out snack entries from meals
+  const filteredMeals = meals.filter(meal => {
+    const mealType = meal.mealType.toLowerCase();
+    return mealType !== 'snack' && mealType !== 'snacks';
+  });
+
+  // Calculate totals from meals (excluding snacks)
+  const totals = filteredMeals.reduce((acc, meal) => {
     const foodId = getFoodId(meal);
     // Find food either by foodId or directly from meal.food if it's a populated object
     let food;

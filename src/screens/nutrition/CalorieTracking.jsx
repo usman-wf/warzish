@@ -77,7 +77,14 @@ const CalorieTracking = () => {
           
           console.log('Meals response:', mealsRes.data);
           const mealsData = mealsRes.data.data || mealsRes.data || [];
-          setMeals(Array.isArray(mealsData) ? mealsData : []);
+          // Filter out any snack entries before setting meals
+          const filteredMeals = Array.isArray(mealsData) 
+            ? mealsData.filter(meal => {
+                const mealType = meal.mealType ? meal.mealType.toLowerCase() : '';
+                return mealType !== 'snack' && mealType !== 'snacks';
+              }) 
+            : [];
+          setMeals(filteredMeals);
           
           // Finally fetch daily nutrition targets
           const dailyRes = await axios.get(`${API_BASE_URL}/food/daily`, {
@@ -140,13 +147,20 @@ const CalorieTracking = () => {
         return;
       }
       
+      // Skip adding if mealType is snacks/snack
+      const normalizedMealType = mealType.toLowerCase();
+      if (normalizedMealType === 'snack' || normalizedMealType === 'snacks') {
+        toast.error("Adding snacks is not supported");
+        return;
+      }
+      
       // Format date correctly for API
       const formattedDate = new Date(selectedDate).toISOString();
       
       await axios.post(`${API_BASE_URL}/food/meal`, {
         foodId,
         date: formattedDate,
-        mealType: mealType.toLowerCase(),
+        mealType: normalizedMealType,
         quantity: Number(quantity)
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -159,7 +173,14 @@ const CalorieTracking = () => {
       );
       
       const updatedMeals = updatedMealsRes.data.data || updatedMealsRes.data || [];
-      setMeals(Array.isArray(updatedMeals) ? updatedMeals : []);
+      // Filter out any snack entries
+      const filteredMeals = Array.isArray(updatedMeals) 
+        ? updatedMeals.filter(meal => {
+            const mealType = meal.mealType ? meal.mealType.toLowerCase() : '';
+            return mealType !== 'snack' && mealType !== 'snacks';
+          }) 
+        : [];
+      setMeals(filteredMeals);
       
       toast.success('Meal added successfully');
     } catch (error) {
@@ -188,7 +209,14 @@ const CalorieTracking = () => {
       );
       
       const updatedMeals = updatedMealsRes.data.data || updatedMealsRes.data || [];
-      setMeals(Array.isArray(updatedMeals) ? updatedMeals : []);
+      // Filter out any snack entries
+      const filteredMeals = Array.isArray(updatedMeals) 
+        ? updatedMeals.filter(meal => {
+            const mealType = meal.mealType ? meal.mealType.toLowerCase() : '';
+            return mealType !== 'snack' && mealType !== 'snacks';
+          }) 
+        : [];
+      setMeals(filteredMeals);
       
       toast.success('Meal updated successfully');
     } catch (error) {
@@ -206,23 +234,49 @@ const CalorieTracking = () => {
         return;
       }
       
-      await axios.delete(`${API_BASE_URL}/food/meal/${mealId}`, {
+      console.log(`Attempting to delete meal with ID: ${mealId}`);
+      
+      const response = await axios.delete(`${API_BASE_URL}/food/meal/${mealId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Refresh meals list
-      const updatedMealsRes = await axios.get(
-        `${API_BASE_URL}/food/meal?date=${selectedDate.toISOString().split('T')[0]}`, 
-        { headers: { Authorization: `Bearer ${token}` }}
-      );
+      console.log('Delete response:', response.data);
       
-      const updatedMeals = updatedMealsRes.data.data || updatedMealsRes.data || [];
-      setMeals(Array.isArray(updatedMeals) ? updatedMeals : []);
-      
-      toast.success('Meal deleted successfully');
+      // Only proceed if deletion was successful
+      if (response.status === 200) {
+        // Refresh meals list
+        const updatedMealsRes = await axios.get(
+          `${API_BASE_URL}/food/meal?date=${selectedDate.toISOString().split('T')[0]}`, 
+          { headers: { Authorization: `Bearer ${token}` }}
+        );
+        
+        const updatedMeals = updatedMealsRes.data.data || updatedMealsRes.data || [];
+        // Filter out any snack entries
+        const filteredMeals = Array.isArray(updatedMeals) 
+          ? updatedMeals.filter(meal => {
+              const mealType = meal.mealType ? meal.mealType.toLowerCase() : '';
+              return mealType !== 'snack' && mealType !== 'snacks';
+            }) 
+          : [];
+        setMeals(filteredMeals);
+        
+        toast.success('Meal deleted successfully');
+      } else {
+        toast.error('Failed to delete meal: ' + (response.data?.message || 'Unknown error'));
+      }
     } catch (error) {
       console.error('Error deleting meal:', error);
-      toast.error(error.response?.data?.message || 'Failed to delete meal');
+      
+      // Handle authentication errors
+      if (error.response?.status === 401) {
+        toast.error('Your session has expired. Please log in again.');
+        navigate('/login');
+        return;
+      }
+      
+      // More detailed error message
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || 'Failed to delete meal';
+      toast.error(errorMessage);
     }
   };
 

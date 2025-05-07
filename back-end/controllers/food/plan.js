@@ -222,33 +222,113 @@ export const updateMealPlan = async (req, res) => {
       });
     }
     return res.status(500).json({ 
-      success: false,
-      message: 'Server Error' 
+      message: 'Server Error',
+      error: err.message
     });
   }
 };
 
-// Delete a meal plan
+// Delete a meal plan - completely rewritten for reliability
 export const deleteMealPlan = async (req, res) => {
   try {
-    const mealPlan = await MealPlan.findById(req.params.id);
+    const planId = req.params.id;
+    const userId = req.user.id;
     
-    if (!mealPlan) {
-      return res.status(404).json({ message: 'Meal plan not found' });
+    console.log(`DELETE OPERATION: Attempting to delete meal plan with ID: ${planId} for user: ${userId}`);
+    
+    if (!planId) {
+      console.log('DELETE ERROR: Missing plan ID');
+      return res.status(400).json({ 
+        success: false,
+        message: 'Missing meal plan ID' 
+      });
     }
     
-    // Check if user owns this meal plan
-    if (mealPlan.user.toString() !== req.user.id) {
-      return res.status(401).json({ message: 'User not authorized' });
+    // Try different deletion approaches, from most direct to most complex
+    try {
+      // APPROACH 1: Direct findByIdAndDelete
+      console.log('DELETE APPROACH 1: Using findByIdAndDelete');
+      const deleteResult = await MealPlan.findOneAndDelete({ 
+        _id: planId,
+        user: userId 
+      });
+      
+      if (deleteResult) {
+        console.log('DELETE SUCCESS with approach 1:', deleteResult);
+        return res.status(200).json({
+          success: true,
+          message: 'Meal plan deleted successfully',
+          planId: planId
+        });
+      }
+      
+      console.log('DELETE APPROACH 1 failed, no document found');
+      
+      // APPROACH 2: Verify plan exists first, then delete
+      console.log('DELETE APPROACH 2: Checking existence first');
+      const planExists = await MealPlan.findOne({ 
+        _id: planId,
+        user: userId
+      });
+      
+      if (!planExists) {
+        console.log('DELETE ERROR: Plan not found or not authorized');
+        return res.status(404).json({
+          success: false,
+          message: 'Meal plan not found or you are not authorized to delete it'
+        });
+      }
+      
+      // Plan exists and is owned by this user, so remove it
+      console.log('DELETE APPROACH 2: Plan found, attempting deleteOne');
+      const deleteOneResult = await MealPlan.deleteOne({ _id: planId });
+      
+      if (deleteOneResult.deletedCount > 0) {
+        console.log('DELETE SUCCESS with approach 2:', deleteOneResult);
+        return res.status(200).json({
+          success: true,
+          message: 'Meal plan deleted successfully',
+          planId: planId
+        });
+      }
+      
+      console.log('DELETE APPROACH 2 failed, could not delete');
+      
+      // APPROACH 3: If all else fails, mark as inactive
+      console.log('DELETE APPROACH 3: Marking as inactive');
+      planExists.isActive = false;
+      const savedResult = await planExists.save();
+      
+      if (savedResult) {
+        console.log('DELETE SUCCESS with approach 3 (marked inactive):', savedResult);
+        return res.status(200).json({
+          success: true,
+          message: 'Meal plan marked as inactive',
+          planId: planId
+        });
+      }
+      
+      // If we get here, all approaches failed
+      console.log('DELETE ERROR: All approaches failed');
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to delete meal plan after multiple attempts'
+      });
+    } catch (innerError) {
+      console.error('DELETE INNER ERROR:', innerError);
+      throw innerError;
     }
-    
-    await mealPlan.remove();
-    return res.json({ message: 'Meal plan removed' });
   } catch (err) {
-    console.error(err.message);
-    if (err.kind === 'ObjectId') {
-      return res.status(404).json({ message: 'Meal plan not found' });
-    }
-    return res.status(500).json({ message: 'Server Error' });
+    console.error('DELETE OUTER ERROR:', err);
+    console.error('Error stack:', err.stack);
+    
+    return res.status(500).json({
+      success: false,
+      message: 'Server error while deleting meal plan',
+      error: err.message
+    });
   }
 };
+
+// Alias for compatibility with existing route
+export const deleteOneMealPlan = deleteMealPlan;

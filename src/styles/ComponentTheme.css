@@ -242,4 +242,123 @@ label {
   .lg\:grid-cols-3 {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* Workout Details Styling */
+.WorkoutDetails {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: var(--background-light);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.WorkoutDetailsContent {
+  padding: 15px;
+}
+
+.WorkoutHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.WorkoutHeader h2 {
+  font-size: 24px;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.WorkoutActions {
+  display: flex;
+  gap: 10px;
+}
+
+.WorkoutDescription {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+.WorkoutInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 15px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+}
+
+.WorkoutInfo p {
+  margin: 5px 0;
+}
+
+.WorkoutTags {
+  margin-bottom: 25px;
+}
+
+.TagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.Tag {
+  background-color: var(--primary-color-light);
+  color: var(--primary-color-dark);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.ExerciseList {
+  margin-bottom: 25px;
+}
+
+.Exercise {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+}
+
+.Exercise h4 {
+  margin-top: 0;
+  color: var(--primary-color);
+}
+
+.ExerciseDetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ExerciseInstructions {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color-light);
+}
+
+.ExerciseInstructions h5 {
+  margin-top: 0;
+  color: var(--text-color);
+}
+
+.AdditionalInfo {
+  padding: 15px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+}
+
+.workout-details-container {
+  padding: 20px;
 } 
