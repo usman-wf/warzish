@@ -77,6 +77,38 @@
   background-color: #4a4a4a;
 }
 
+/* Save Button Styling */
+.workout-button.danger {
+  background-color: #d10000;
+  color: white;
+}
+
+.workout-button.danger:hover {
+  background-color: #b00000;
+}
+
+.saved-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  font-weight: 500;
+  color: var(--Secondary-Color-Yellow);
+  background-color: rgba(255, 215, 0, 0.1);
+  border: 1px solid var(--Secondary-Color-Yellow);
+}
+
+/* Make buttons more responsive */
+.workout-button:active {
+  transform: scale(0.98);
+}
+
+.workout-button:focus {
+  outline: 2px solid var(--Secondary-Color-Yellow);
+  outline-offset: 2px;
+}
+
 /* Grid Layout for Cards */
 .workout-grid {
   display: grid;

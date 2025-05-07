@@ -58,6 +58,12 @@ const WorkoutLibrary = ({ workouts, clicked }) => {
             setLoading(true);
             setSavingId(workoutId); // Set the workout being saved
             
+            // Check if this is a sample workout (with ID like 'sample-1')
+            if (workoutId && workoutId.toString().startsWith('sample-')) {
+                toast.warning('Sample workouts cannot be saved. Real workouts can be saved once you create them!');
+                return;
+            }
+            
             const token = localStorage.getItem('token');
             const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
             
@@ -94,6 +100,9 @@ const WorkoutLibrary = ({ workouts, clicked }) => {
                 if (!savedWorkoutIds.includes(workoutId)) {
                     setSavedWorkoutIds(prev => [...prev, workoutId]);
                 }
+            } else if (error.response?.status === 400 && 
+                error.response?.data?.message?.includes('Cast to ObjectId failed')) {
+                toast.warning('This sample workout cannot be saved. Create your own workouts instead!');
             } else {
                 toast.error('Could not save workout. Please try again.');
             }

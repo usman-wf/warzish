@@ -10,85 +10,202 @@ const API_BASE_URL = 'http://localhost:3030';
 
 const SavedWorkouts = () => {
   const navigate = useNavigate();
-  const [workoutPlans, setWorkoutPlans] = useState([]);
-  const [savedPlans, setSavedPlans] = useState([]);
+  const [personalWorkouts, setPersonalWorkouts] = useState([]);
+  const [publicWorkouts, setPublicWorkouts] = useState([]);
+  const [savedWorkouts, setSavedWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('personal'); // 'personal', 'public', or 'saved'
 
   useEffect(() => {
-    // Check authentication using localStorage
     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
     if (!isAuthenticated) {
-      toast.error('Please log in to view saved workouts');
+      toast.error('Please log in to view workouts');
       navigate('/login');
       return;
     }
-    
-    const fetchData = async () => {
+
+    const fetchWorkouts = async () => {
       try {
         setLoading(true);
-        setError(null);
         const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('Authentication token not found');
-        }
         
-        const [plansRes, savedRes] = await Promise.all([
-          axios.get(`${API_BASE_URL}/exercise/workout`, {
-            headers: { Authorization: `Bearer ${token}` }
-          }),
-          axios.get(`${API_BASE_URL}/exercise/workout-saved`, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-        ]);
-        
-        // Handle both direct array and nested data property formats
-        const plansData = Array.isArray(plansRes.data) 
-          ? plansRes.data 
-          : (plansRes.data.data || []);
-          
-        const savedData = Array.isArray(savedRes.data) 
-          ? savedRes.data 
-          : (savedRes.data.data || []);
-        
-        console.log('Workout plans response:', plansRes.data);
-        console.log('Workout plans processed:', plansData);
-        console.log('Saved plans response:', savedRes.data);
-        console.log('Saved plans processed:', savedData);
-        
-        setWorkoutPlans(plansData);
-        setSavedPlans(savedData);
+        // Fetch personal workouts
+        const personalResponse = await axios.get(`${API_BASE_URL}/exercise/workout`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setPersonalWorkouts(personalResponse.data.data || []);
+
+        // Fetch public workouts
+        const publicResponse = await axios.get(`${API_BASE_URL}/exercise/workout-public`);
+        setPublicWorkouts(publicResponse.data.data || []);
+
+        // Fetch saved workouts
+        const savedResponse = await axios.get(`${API_BASE_URL}/exercise/workout-saved`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setSavedWorkouts(savedResponse.data.data || []);
+
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Failed to load workout plans. Please try again.');
-        toast.error('Error loading workouts: ' + (error.response?.data?.message || error.message));
+        console.error('Error fetching workouts:', error);
+        setError(error.response?.data?.message || 'Failed to fetch workouts');
+        toast.error('Error loading workouts');
       } finally {
         setLoading(false);
       }
     };
-    
-    fetchData();
+
+    fetchWorkouts();
   }, [navigate]);
 
-  const handleDeleteSaved = async (savedId) => {
+  const handleDeleteWorkout = async (workoutId) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        toast.error('Authentication token not found');
-        navigate('/login');
-        return;
-      }
-      
-      await axios.delete(`${API_BASE_URL}/exercise/workout-saved/${savedId}`, {
+      await axios.delete(`${API_BASE_URL}/exercise/workout/${workoutId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      setSavedPlans(prev => prev.filter(plan => plan._id !== savedId));
-      toast.success('Saved workout removed');
+      setPersonalWorkouts(prev => prev.filter(workout => workout._id !== workoutId));
+      toast.success('Workout deleted successfully');
     } catch (error) {
-      console.error('Error deleting saved workout:', error);
-      toast.error('Failed to delete workout: ' + (error.response?.data?.message || error.message));
+      console.error('Error deleting workout:', error);
+      toast.error('Failed to delete workout');
     }
+  };
+
+  const handleSaveWorkout = async (workoutId) => {
+    try {
+      setLoading(true);
+      toast.info('Saving workout...');
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication token not found. Please log in again.');
+        setLoading(false);
+        return;
+      }
+      
+      console.log('Saving workout with ID:', workoutId);
+      console.log('Request headers:', { Authorization: `Bearer ${token.substring(0, 10)}...` });
+      console.log('Request payload:', { workoutPlanId: workoutId });
+      
+      const response = await axios.post(`${API_BASE_URL}/exercise/workout-saved`, 
+        { workoutPlanId: workoutId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      console.log('Save response:', response.data);
+      toast.success('Workout saved successfully');
+      
+      // Refresh saved workouts
+      const savedResponse = await axios.get(`${API_BASE_URL}/exercise/workout-saved`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSavedWorkouts(savedResponse.data.data || []);
+    } catch (error) {
+      console.error('Error saving workout:', error);
+      
+      if (error.response) {
+        console.error('Response status:', error.response.status);
+        console.error('Response data:', error.response.data);
+        toast.error(`Failed to save: ${error.response.data.message || error.response.statusText}`);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+        toast.error('No response from server. Please check your connection.');
+      } else {
+        console.error('Request error:', error.message);
+        toast.error(`Error: ${error.message}`);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveSavedWorkout = async (workoutId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API_BASE_URL}/exercise/workout-saved/${workoutId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setSavedWorkouts(prev => prev.filter(workout => workout._id !== workoutId));
+      toast.success('Workout removed from saved list');
+    } catch (error) {
+      console.error('Error removing saved workout:', error);
+      toast.error('Failed to remove saved workout');
+    }
+  };
+
+  const renderWorkoutCard = (workout, type) => {
+    const isPersonal = type === 'personal';
+    const isPublic = type === 'public';
+
+    return (
+      <div key={workout._id} className="workout-card">
+        <h3>{workout.name}</h3>
+        <p>{workout.description}</p>
+        <div className="workout-details">
+          <span>Difficulty: {workout.difficulty}</span>
+          <span>Duration: {workout.estimatedDuration} mins</span>
+        </div>
+        <div className="workout-actions">
+          {isPublic ? (
+            <>
+              <button 
+                onClick={() => navigate(`/workout/view/${workout._id}`)}
+                className="workout-button secondary"
+              >
+                View Details
+              </button>
+              {!savedWorkouts.some(saved => saved.workoutId === workout._id) && (
+                <button 
+                  onClick={() => handleSaveWorkout(workout._id)}
+                  className="workout-button primary"
+                >
+                  Save Workout
+                </button>
+              )}
+            </>
+          ) : isPersonal ? (
+            <>
+              <button 
+                onClick={() => navigate(`/workout/view/${workout._id}`)}
+                className="workout-button secondary"
+              >
+                View Details
+              </button>
+              <button 
+                onClick={() => navigate(`/workout/create?edit=${workout._id}`)}
+                className="workout-button primary"
+              >
+                Edit
+              </button>
+              <button 
+                onClick={() => handleDeleteWorkout(workout._id)}
+                className="workout-button danger"
+              >
+                Delete
+              </button>
+            </>
+          ) : (
+            <>
+              <button 
+                onClick={() => navigate(`/workout/view/${workout._id}`)}
+                className="workout-button secondary"
+              >
+                View Details
+              </button>
+              <button 
+                onClick={() => handleRemoveSavedWorkout(workout._id)}
+                className="workout-button danger"
+              >
+                Remove from Saved
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    );
   };
 
   if (loading) {
@@ -114,7 +231,6 @@ const SavedWorkouts = () => {
             <button 
               onClick={() => window.location.reload()}
               className="workout-button primary"
-              style={{ marginTop: '1rem' }}
             >
               Retry
             </button>
@@ -129,66 +245,86 @@ const SavedWorkouts = () => {
       <Sidebar />
       <div className="workout-main">
         <div className="workout-header">
-          <h1>Saved Workouts</h1>
+          <h1>Workout Library</h1>
+          <div className="header-actions">
+            <button 
+              onClick={() => navigate('/workout/create')}
+              className="workout-button primary"
+            >
+              Create New Workout
+            </button>
+          </div>
+        </div>
+
+        <div className="workout-tabs">
           <button 
-            onClick={() => navigate('/workout')}
-            className="workout-button primary"
+            className={`tab-button ${activeTab === 'personal' ? 'active' : ''}`}
+            onClick={() => setActiveTab('personal')}
           >
-            Browse Workouts
+            My Workouts
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'public' ? 'active' : ''}`}
+            onClick={() => setActiveTab('public')}
+          >
+            Public Workouts
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'saved' ? 'active' : ''}`}
+            onClick={() => setActiveTab('saved')}
+          >
+            Saved Workouts
           </button>
         </div>
-        
+
         <div className="workout-container">
-          <div>
-            <h2 style={{ marginBottom: '1rem' }}>Your Saved Workouts</h2>
-            {savedPlans.length === 0 ? (
-              <div className="text-center py-4">
-                <p>You haven&apos;t saved any workout plans yet.</p>
-                <button
-                  onClick={() => navigate('/workout')}
-                  className="workout-button secondary"
-                  style={{ marginTop: '1rem' }}
-                >
-                  Browse Workouts to Save
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {savedPlans.map(saved => {
-                  const plan = workoutPlans.find(p => {
-                    const savedId = typeof saved.workoutPlanId === 'string' 
-                      ? saved.workoutPlanId 
-                      : saved.workoutPlanId?._id;
-                    return p._id === savedId;
-                  });
-                  
-                  return plan ? (
-                    <div key={saved._id} className="workout-card">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>{plan.name}</h3>
-                          <p style={{ marginBottom: '0.75rem' }}>{plan.description}</p>
-                          <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <span className="tag">{plan.difficulty}</span>
-                            <span className="tag">{plan.estimatedDuration} mins</span>
-                          </div>
-                        </div>
-                        <div>
-                          <button
-                            onClick={() => handleDeleteSaved(saved._id)}
-                            className="workout-button primary"
-                            style={{ backgroundColor: '#d10000' }}
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ) : null;
-                })}
-              </div>
-            )}
-          </div>
+          {activeTab === 'personal' && (
+            <div className="workout-grid">
+              {personalWorkouts.length > 0 ? (
+                personalWorkouts.map(workout => renderWorkoutCard(workout, 'personal'))
+              ) : (
+                <div className="empty-state">
+                  <p>You haven&apos;t created any workouts yet</p>
+                  <button
+                    onClick={() => navigate('/workout/create')}
+                    className="workout-button primary"
+                  >
+                    Create Your First Workout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'public' && (
+            <div className="workout-grid">
+              {publicWorkouts.length > 0 ? (
+                publicWorkouts.map(workout => renderWorkoutCard(workout, 'public'))
+              ) : (
+                <div className="empty-state">
+                  <p>No public workouts available</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'saved' && (
+            <div className="workout-grid">
+              {savedWorkouts.length > 0 ? (
+                savedWorkouts.map(workout => renderWorkoutCard(workout, 'saved'))
+              ) : (
+                <div className="empty-state">
+                  <p>You haven&apos;t saved any workouts yet</p>
+                  <button
+                    onClick={() => setActiveTab('public')}
+                    className="workout-button primary"
+                  >
+                    Browse Public Workouts
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

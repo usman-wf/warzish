@@ -17,6 +17,7 @@ import Goals from "./screens/Goals";
 import WorkoutCreator from './screens/workout/WorkoutCreator';
 import ExerciseLibrary from './screens/workout/ExerciseLibrary';
 import SavedWorkouts from './screens/workout/SavedWorkouts';
+import WorkoutView from './screens/workout/WorkoutView';
 
 // Nutrition Components
 import CalorieTracking from './screens/nutrition/CalorieTracking';
@@ -57,6 +58,7 @@ function App() {
         <Route path="workout/create" element={<ProtectedRoute><WorkoutCreator /></ProtectedRoute>} />
         <Route path="workout/exercise-library" element={<ProtectedRoute><ExerciseLibrary /></ProtectedRoute>} />
         <Route path="workout/saved-workouts" element={<ProtectedRoute><SavedWorkouts /></ProtectedRoute>} />
+        <Route path="workout/view/:id" element={<ProtectedRoute><WorkoutView /></ProtectedRoute>} />
 
         {/* Nutrition Routes - Updated to match sidebar paths */}
         <Route path="nutrition/calorie-tracking" element={<ProtectedRoute><CalorieTracking /></ProtectedRoute>} />

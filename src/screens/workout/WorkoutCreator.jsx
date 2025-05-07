@@ -188,7 +188,7 @@ const WorkoutCreator = () => {
         toast.success('Workout created successfully');
       }
       
-      navigate('/workout/saved-workouts');
+      navigate('/workout');
     } catch (error) {
       console.error('Error saving workout plan:', error);
       toast.error('Failed to save workout plan: ' + (error.response?.data?.message || 'Please try again'));
@@ -202,7 +202,7 @@ const WorkoutCreator = () => {
         <div className="workout-header">
           <h1>{isEditing ? 'Edit Workout' : 'Create Workout'}</h1>
           <button 
-            onClick={() => navigate('/workout/saved-workouts')}
+            onClick={() => navigate('/workout')}
             className="workout-button secondary"
           >
             View All Workouts

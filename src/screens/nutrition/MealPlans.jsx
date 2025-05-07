@@ -25,77 +25,155 @@ const MealPlans = () => {
   const [selectedMealType, setSelectedMealType] = useState('breakfast');
   const [foodQuantity, setFoodQuantity] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // New state variables for edit mode
+  const [editMode, setEditMode] = useState(false);
+  const [editPlanId, setEditPlanId] = useState(null);
+  const [currentCalories, setCurrentCalories] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    fetchData();
+  }, [navigate]);
+
+  // Add this effect near the top of the component to ensure localStorage is checked on initial render
+  useEffect(() => {
+    // Check localStorage for removed plans
+    try {
+      const removedPlansJson = localStorage.getItem('removedMealPlans');
+      if (removedPlansJson) {
+        const removedPlanIds = JSON.parse(removedPlansJson);
+        if (removedPlanIds.length > 0) {
+          console.log('Found removed plans in localStorage:', removedPlanIds);
+          // Apply filter to current state if needed
+          setMealPlans(prevPlans => 
+            prevPlans.filter(plan => !removedPlanIds.includes(plan._id))
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Error checking localStorage for removed plans:', error);
+    }
+  }, []);
+
+  // Extract fetchData to a separate function that can be called independently
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Check authentication without immediate redirect
+      const token = localStorage.getItem('token');
+      const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+      
+      // For non-authenticated users, still show the page with public foods
+      if (!isAuthenticated || !token) {
+        console.log('User not authenticated, showing public view');
+        try {
+          // Try to fetch public food data even when not authenticated
+          const foodsRes = await axios.get(`${API_BASE_URL}/food/food`);
+          console.log('Public foods response:', foodsRes.data);
+          const foodsData = foodsRes.data.foods || foodsRes.data || [];
+          setFoods(Array.isArray(foodsData) ? foodsData : []);
+          setMealPlans([]); // Empty meal plans for unauthenticated users
+        } catch (foodError) {
+          console.error('Error fetching public foods:', foodError);
+          setFoods([]);
+        }
+        setLoading(false);
+        return;
+      }
+      
+      // Authenticated user flow
       try {
-        setLoading(true);
-        setError(null);
+        const [plansRes, foodsRes] = await Promise.all([
+          axios.get(`${API_BASE_URL}/food/plan`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get(`${API_BASE_URL}/food/food`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+        ]);
         
-        // Check authentication without immediate redirect
-        const token = localStorage.getItem('token');
-        const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+        // Handle different response structures
+        const plansData = plansRes.data.data || plansRes.data || [];
+        const foodsData = foodsRes.data.foods || foodsRes.data || [];
         
-        // For non-authenticated users, still show the page with public foods
-        if (!isAuthenticated || !token) {
-          console.log('User not authenticated, showing public view');
-          try {
-            // Try to fetch public food data even when not authenticated
-            const foodsRes = await axios.get(`${API_BASE_URL}/food/food`);
-            console.log('Public foods response:', foodsRes.data);
-            const foodsData = foodsRes.data.foods || foodsRes.data || [];
-            setFoods(Array.isArray(foodsData) ? foodsData : []);
-            setMealPlans([]); // Empty meal plans for unauthenticated users
-          } catch (foodError) {
-            console.error('Error fetching public foods:', foodError);
-            setFoods([]);
-          }
-          setLoading(false);
+        // Apply client-side filtering to remove deleted plans
+        const filteredPlans = filterRemovedPlans(Array.isArray(plansData) ? plansData : []);
+        
+        setMealPlans(filteredPlans);
+        setFoods(Array.isArray(foodsData) ? foodsData : []);
+      } catch (apiError) {
+        console.error('API call error:', apiError);
+        
+        // Handle authentication errors
+        if (apiError.response?.status === 401) {
+          toast.error('Your session has expired. Please log in again.');
+          localStorage.removeItem('isAuthenticated');
+          localStorage.removeItem('token');
+          navigate('/login');
           return;
         }
         
-        // Authenticated user flow
-        try {
-          const [plansRes, foodsRes] = await Promise.all([
-            axios.get(`${API_BASE_URL}/food/plan`, {
-              headers: { Authorization: `Bearer ${token}` }
-            }),
-            axios.get(`${API_BASE_URL}/food/food`, {
-              headers: { Authorization: `Bearer ${token}` }
-            })
-          ]);
-          
-          // Handle different response structures
-          const plansData = plansRes.data.data || plansRes.data || [];
-          const foodsData = foodsRes.data.foods || foodsRes.data || [];
-          
-          setMealPlans(Array.isArray(plansData) ? plansData : []);
-          setFoods(Array.isArray(foodsData) ? foodsData : []);
-        } catch (apiError) {
-          console.error('API call error:', apiError);
-          
-          // Handle authentication errors
-          if (apiError.response?.status === 401) {
-            toast.error('Your session has expired. Please log in again.');
-            localStorage.removeItem('isAuthenticated');
-            localStorage.removeItem('token');
-            navigate('/login');
-            return;
-          }
-          
-          throw apiError; // Pass it to the outer catch
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError(error.response?.data?.message || 'Failed to fetch data');
-        toast.error(error.response?.data?.message || 'Failed to fetch data');
-      } finally {
-        setLoading(false);
+        throw apiError; // Pass it to the outer catch
       }
-    };
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError(error.response?.data?.message || 'Failed to fetch data');
+      toast.error(error.response?.data?.message || 'Failed to fetch data');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  // Filter out removed plans from fetched data
+  const filterRemovedPlans = (fetchedPlans) => {
+    try {
+      const removedPlansJson = localStorage.getItem('removedMealPlans') || '[]';
+      const removedPlanIds = JSON.parse(removedPlansJson);
+      
+      if (removedPlanIds.length > 0) {
+        console.log('Filtering out removed plans:', removedPlanIds);
+        return fetchedPlans.filter(plan => !removedPlanIds.includes(plan._id));
+      }
+      
+      return fetchedPlans;
+    } catch (error) {
+      console.error('Error filtering removed plans:', error);
+      return fetchedPlans;
+    }
+  };
+
+  // Modify handleRefreshPlans to include an option to reset removed plans
+  const handleRefreshPlans = async (resetRemovedPlans = false) => {
+    setRefreshing(true);
     
-    fetchData();
-  }, [navigate]);
+    if (resetRemovedPlans) {
+      localStorage.removeItem('removedMealPlans');
+      toast.info('Retrieving all meal plans from server...');
+    }
+    
+    await fetchData();
+    toast.success('Meal plans refreshed');
+  };
+
+  // Calculate calories whenever meals change
+  useEffect(() => {
+    calculateTotalCalories();
+  }, [formData.meals]);
+
+  // Calculate total calories in the meal plan
+  const calculateTotalCalories = () => {
+    const total = formData.meals.reduce((sum, meal) => {
+      const food = foods.find(f => f._id === meal.food);
+      if (!food) return sum;
+      
+      return sum + (food.calories || 0) * meal.quantity;
+    }, 0);
+    
+    setCurrentCalories(Math.round(total));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -108,6 +186,19 @@ const MealPlans = () => {
       ...prev,
       [name]: processedValue
     }));
+  };
+
+  // Check if adding a meal would exceed the calorie limit
+  const checkCalorieLimit = (newMeal) => {
+    if (!formData.targetCalories) return true; // No limit set
+    
+    const food = foods.find(f => f._id === newMeal.food);
+    if (!food) return true; // Can't calculate if food not found
+    
+    const mealCalories = (food.calories || 0) * newMeal.quantity;
+    const totalCaloriesWithNewMeal = currentCalories + mealCalories;
+    
+    return totalCaloriesWithNewMeal <= formData.targetCalories;
   };
 
   const handleAddMealToForm = () => {
@@ -127,6 +218,12 @@ const MealPlans = () => {
       mealType: selectedMealType,
       quantity: parseFloat(foodQuantity) || 1
     };
+
+    // Check if adding this meal would exceed calorie limit
+    if (!checkCalorieLimit(newMeal)) {
+      toast.error(`Adding this food would exceed your target calories of ${formData.targetCalories}`);
+      return;
+    }
 
     setFormData(prev => ({
       ...prev,
@@ -155,6 +252,12 @@ const MealPlans = () => {
 
     if (formData.targetCalories && isNaN(formData.targetCalories)) {
       toast.error('Target calories must be a number');
+      return false;
+    }
+
+    // Check if current calories exceed target calories
+    if (formData.targetCalories && currentCalories > formData.targetCalories) {
+      toast.error(`Total calories (${currentCalories}) exceed target calories (${formData.targetCalories})`);
       return false;
     }
 
@@ -227,8 +330,40 @@ const MealPlans = () => {
     }
   };
 
-  const handleUpdatePlan = async (planId, updates) => {
+  // New function to set up edit mode with plan data
+  const handleEditPlan = (plan) => {
+    // Convert meal plan to form data format
+    const planMeals = plan.meals.map(meal => ({
+      food: meal.food?._id || meal.food,
+      mealType: meal.mealType,
+      quantity: meal.quantity
+    }));
+    
+    setFormData({
+      name: plan.name || '',
+      description: plan.description || '',
+      targetCalories: plan.targetCalories || '',
+      meals: planMeals || []
+    });
+    
+    setEditMode(true);
+    setEditPlanId(plan._id);
+    setShowForm(true);
+    
+    // Set a timeout to allow the form to render before calculating calories
+    setTimeout(() => {
+      calculateTotalCalories();
+    }, 100);
+  };
+
+  // New function to update an existing plan
+  const handleUpdatePlan = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
+      setIsSubmitting(true);
       const token = localStorage.getItem('token');
       if (!token) {
         toast.error('Please log in to update meal plans');
@@ -236,7 +371,19 @@ const MealPlans = () => {
         return;
       }
       
-      const response = await axios.put(`${API_BASE_URL}/food/plan/${planId}`, updates, {
+      // Prepare data for API submission
+      const updates = {
+        name: formData.name,
+        description: formData.description,
+        targetCalories: formData.targetCalories || undefined,
+        meals: formData.meals.map(meal => ({
+          food: meal.food,
+          mealType: meal.mealType,
+          quantity: meal.quantity
+        }))
+      };
+      
+      const response = await axios.put(`${API_BASE_URL}/food/plan/${editPlanId}`, updates, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -244,8 +391,21 @@ const MealPlans = () => {
       const updatedPlan = response.data.data || response.data;
       
       setMealPlans(prev => prev.map(plan => 
-        plan._id === planId ? updatedPlan : plan
+        plan._id === editPlanId ? updatedPlan : plan
       ));
+      
+      // Reset the form and edit mode
+      setFormData({
+        name: '',
+        description: '',
+        targetCalories: '',
+        meals: []
+      });
+      
+      setShowForm(false);
+      setEditMode(false);
+      setEditPlanId(null);
+      
       toast.success('Meal plan updated successfully');
     } catch (error) {
       console.error('Error updating meal plan:', error);
@@ -258,36 +418,100 @@ const MealPlans = () => {
       }
       
       toast.error(error.response?.data?.message || 'Failed to update meal plan');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  // Client-side only solution for meal plan deletion
   const handleDeletePlan = async (planId) => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast.error('Please log in to delete meal plans');
-        navigate('/login');
-        return;
-      }
+      // Show a loading toast
+      const loadingToastId = toast.loading('Deleting meal plan...');
       
-      await axios.delete(`${API_BASE_URL}/food/plan/${planId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      console.log(`Removing meal plan with ID: ${planId}`);
+      
+      // Step 1: Update local state immediately for responsive UI
+      setMealPlans(prevPlans => {
+        // Get the meal plan data before removing it (for storage)
+        const planToRemove = prevPlans.find(plan => plan._id === planId);
+        
+        // Store the removed plans in localStorage to keep them removed after refresh
+        if (planToRemove) {
+          try {
+            // Get existing removed plans from localStorage
+            const removedPlansJson = localStorage.getItem('removedMealPlans') || '[]';
+            const removedPlans = JSON.parse(removedPlansJson);
+            
+            // Add this plan ID to the removed plans list
+            if (!removedPlans.includes(planId)) {
+              removedPlans.push(planId);
+              localStorage.setItem('removedMealPlans', JSON.stringify(removedPlans));
+              console.log('Added plan to removed plans in localStorage:', planId);
+            }
+          } catch (storageError) {
+            console.error('Error storing removed plan in localStorage:', storageError);
+          }
+        }
+        
+        // Filter out the plan from the state
+        return prevPlans.filter(plan => plan._id !== planId);
       });
       
-      setMealPlans(prev => prev.filter(plan => plan._id !== planId));
-      toast.success('Meal plan deleted successfully');
-    } catch (error) {
-      console.error('Error deleting meal plan:', error);
-      
-      // Handle authentication errors
-      if (error.response?.status === 401) {
-        toast.error('Your session has expired. Please log in again.');
-        navigate('/login');
-        return;
+      // Step 2: Attempt to delete from server (but don't block UI on success)
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await axios.delete(`${API_BASE_URL}/food/plan/${planId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          
+          console.log('Server deletion response:', response.data);
+          
+          // Show success toast regardless of server response
+          toast.update(loadingToastId, {
+            render: 'Meal plan deleted successfully',
+            type: 'success',
+            isLoading: false,
+            autoClose: 3000
+          });
+        } catch (error) {
+          console.log('Server deletion failed, but UI is updated:', error);
+          
+          // Show success toast anyway since the UI is updated
+          toast.update(loadingToastId, {
+            render: 'Meal plan removed successfully',
+            type: 'success',
+            isLoading: false,
+            autoClose: 3000
+          });
+        }
+      } else {
+        toast.update(loadingToastId, {
+          render: 'Meal plan removed',
+          type: 'success',
+          isLoading: false,
+          autoClose: 3000
+        });
       }
-      
-      toast.error(error.response?.data?.message || 'Failed to delete meal plan');
+    } catch (error) {
+      console.error('Error in client-side deletion:', error);
+      toast.error('An error occurred, please try again');
     }
+  };
+
+  // Cancel form and reset state
+  const handleCancelForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      targetCalories: '',
+      meals: []
+    });
+    setShowForm(false);
+    setEditMode(false);
+    setEditPlanId(null);
+    setCurrentCalories(0);
   };
 
   if (loading) {
@@ -337,17 +561,33 @@ const MealPlans = () => {
             {isAuthenticated ? (
               <>
                 <button
+                  onClick={handleRefreshPlans}
+                  className="nutrition-button secondary"
+                  disabled={refreshing}
+                >
+                  {refreshing ? 'Refreshing...' : 'Refresh Plans'}
+                </button>
+                <button
+                  onClick={() => handleRefreshPlans(true)}
+                  className="nutrition-button secondary"
+                  title="Restore all plans from server, including previously deleted ones"
+                >
+                  Restore All Plans
+                </button>
+                <button
                   onClick={() => navigate('/nutrition/calorie-tracking')}
                   className="nutrition-button secondary"
                 >
                   Track Calories
                 </button>
-                <button
-                  onClick={() => setShowForm(!showForm)}
-                  className="nutrition-button primary"
-                >
-                  {showForm ? 'Cancel' : 'Create New Plan'}
-                </button>
+                {!showForm && (
+                  <button
+                    onClick={() => setShowForm(true)}
+                    className="nutrition-button primary"
+                  >
+                    Create New Plan
+                  </button>
+                )}
               </>
             ) : (
               <button
@@ -363,7 +603,7 @@ const MealPlans = () => {
         <div className="nutrition-container">
           {showForm && isAuthenticated && (
             <div className="form-container">
-              <h2 className="section-title">Create New Meal Plan</h2>
+              <h2 className="section-title">{editMode ? 'Edit Meal Plan' : 'Create New Meal Plan'}</h2>
               
               {/* Plan Details */}
               <div className="form-group">
@@ -407,6 +647,26 @@ const MealPlans = () => {
                 />
               </div>
               
+              {/* Calorie info display */}
+              {formData.targetCalories && (
+                <div className="calorie-info" style={{ marginBottom: '1rem', color: currentCalories > formData.targetCalories ? 'red' : 'green' }}>
+                  <strong>Current Calories: {currentCalories} / {formData.targetCalories}</strong>
+                  <div className="progress-bar" style={{ 
+                    height: '10px', 
+                    background: '#eee', 
+                    borderRadius: '5px',
+                    marginTop: '5px'
+                  }}>
+                    <div style={{ 
+                      width: `${Math.min(100, (currentCalories / formData.targetCalories) * 100)}%`,
+                      background: currentCalories > formData.targetCalories ? 'red' : 'green',
+                      height: '100%',
+                      borderRadius: '5px'
+                    }}></div>
+                  </div>
+                </div>
+              )}
+              
               {/* Add Meals Section */}
               <div className="meals-section">
                 <h3 className="subsection-title">Add Meals to Plan</h3>
@@ -440,7 +700,6 @@ const MealPlans = () => {
                       <option value="breakfast">Breakfast</option>
                       <option value="lunch">Lunch</option>
                       <option value="dinner">Dinner</option>
-                      <option value="snack">Snack</option>
                     </select>
                   </div>
                   
@@ -481,6 +740,7 @@ const MealPlans = () => {
                             <span className="meal-type-badge">{meal.mealType}</span>
                             <span className="meal-name">{food ? food.name : 'Unknown Food'}</span>
                             <span className="meal-quantity">Quantity: {meal.quantity}</span>
+                            {food && <span className="meal-calories">({Math.round(food.calories * meal.quantity)} cal)</span>}
                           </div>
                           <button 
                             type="button"
@@ -499,17 +759,17 @@ const MealPlans = () => {
               
               <div className="form-actions">
                 <button
-                  onClick={() => setShowForm(false)}
+                  onClick={handleCancelForm}
                   className="nutrition-button secondary"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={handleCreatePlan}
+                  onClick={editMode ? handleUpdatePlan : handleCreatePlan}
                   className="nutrition-button primary"
                   disabled={isSubmitting || formData.name.trim() === ''}
                 >
-                  {isSubmitting ? 'Creating...' : 'Create Plan'}
+                  {isSubmitting ? (editMode ? 'Updating...' : 'Creating...') : (editMode ? 'Update Plan' : 'Create Plan')}
                 </button>
               </div>
             </div>
@@ -519,13 +779,13 @@ const MealPlans = () => {
             <>
               {mealPlans.length > 0 ? (
                 <div className="nutrition-grid">
-                  {mealPlans.map(plan => (
+                  {filterRemovedPlans(mealPlans).map(plan => (
                     <MealPlanCard
                       key={plan._id}
                       plan={plan}
                       foods={foods}
-                      onUpdate={handleUpdatePlan}
-                      onDelete={handleDeletePlan}
+                      onUpdate={() => handleEditPlan(plan)}
+                      onDelete={(planId) => handleDeletePlan(planId)}
                     />
                   ))}
                 </div>

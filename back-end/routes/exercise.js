@@ -26,7 +26,8 @@ import {
   getWorkoutPlanById,
   updateWorkoutPlan,
   deleteWorkoutPlan,
-
+  getPublicWorkoutPlans,
+  getPublicWorkoutPlanById
 } from '../controllers/exercise/workoutPlan.js';
 import { protect } from '../middlewares/authentication.js';
 
@@ -50,6 +51,15 @@ router
   .get(protect, getWorkoutPlanById)
   .put(protect, updateWorkoutPlan)
   .delete(protect, deleteWorkoutPlan);
+
+// Public workout routes
+router
+  .route('/workout-public')
+  .get(getPublicWorkoutPlans);
+
+router
+  .route('/workout-public/:id')
+  .get(getPublicWorkoutPlanById);
 
 // File: routes/savedPlanRoutes.js
 import {

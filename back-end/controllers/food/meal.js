@@ -290,7 +290,9 @@ export const deleteMealEntry = async (req, res) => {
       });
     }
     
-    await mealEntry.deleteOne();
+    // Use the static deleteOne method instead of instance method
+    await MealEntry.deleteOne({ _id: req.params.id });
+    
     return res.json({ 
       success: true,
       message: 'Meal entry deleted successfully',
