@@ -31,6 +31,13 @@ const Sidebar = () => {
             ]
         },
         {
+            category: 'Social',
+            items: [
+                { path: '/social', label: 'Activity Feed', icon: 'feed' },
+                { path: '/social?tab=goals', label: 'Collaborative Goals', icon: 'groups' },
+            ]
+        },
+        {
             category: 'Suggestion',
             items: [
                 { path: '/nutrition', label: 'Nutrition Suggestion', icon: 'restaurant_menu' },
@@ -41,8 +48,6 @@ const Sidebar = () => {
             category: 'Goals & Progress',
             items: [
                 { path: '/goals', label: 'Fitness Goals', icon: 'flag' },
-                { path: '/social-workout', label: 'Social Workouts', icon: 'groups', disabled: true },
-                { path: '/community', label: 'Community', icon: 'forum', disabled: true },
             ]
         },
         { path: '/profile', label: 'Profile', icon: 'person' },
@@ -69,16 +74,12 @@ const Sidebar = () => {
                                 {item.items.map((subItem, subIndex) => (
                                     <Link
                                         key={subIndex}
-                                        to={subItem.disabled ? '#' : subItem.path}
-                                        className={`nav-link ${currentPath === subItem.path ? 'active' : ''} ${subItem.disabled ? 'disabled' : ''}`}
-                                        onClick={e => {
-                                            if (subItem.disabled) e.preventDefault();
-                                            else setIsOpen(false);
-                                        }}
+                                        to={subItem.path}
+                                        className={`nav-link ${currentPath === subItem.path ? 'active' : ''}`}
+                                        onClick={() => setIsOpen(false)}
                                     >
                                         <i className="material-icons">{subItem.icon}</i>
                                         <span className="nav-label">{subItem.label}</span>
-                                        {subItem.disabled && <span className="coming-soon">Coming soon</span>}
                                     </Link>
                                 ))}
                             </div>

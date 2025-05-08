@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import PropTypes from 'prop-types';
 import "./App.css";
+import { AuthProvider } from './contexts/AuthContext';
 
 // Public Screens
 import Home from './screens/Home';
@@ -13,6 +14,7 @@ import Workout from "./screens/Workout";
 import Profile from "./screens/Profile";
 import Goals from "./screens/Goals";
 import WorkoutHistory from "./screens/WorkoutHistory";
+import SocialPage from "./pages/SocialPage";
 
 // Workout Components
 import WorkoutCreator from './screens/workout/WorkoutCreator';
@@ -42,46 +44,49 @@ ProtectedRoute.propTypes = {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Routes */}
-        <Route index element={<Home />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<SignUp />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public Routes */}
+          <Route index element={<Home />} />
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<SignUp />} />
 
-        {/* Protected Routes */}
-        <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
+          {/* Protected Routes */}
+          <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
+          <Route path="social" element={<ProtectedRoute><SocialPage /></ProtectedRoute>} />
 
-        {/* Workout Routes - Updated to match sidebar paths */}
-        <Route path="workout" element={<ProtectedRoute><Workout /></ProtectedRoute>} />
-        <Route path="workout/create" element={<ProtectedRoute><WorkoutCreator /></ProtectedRoute>} />
-        <Route path="workout/exercise-library" element={<ProtectedRoute><ExerciseLibrary /></ProtectedRoute>} />
-        <Route path="workout/saved-workouts" element={<ProtectedRoute><SavedWorkouts /></ProtectedRoute>} />
-        <Route path="workout/view/:id" element={<ProtectedRoute><WorkoutView /></ProtectedRoute>} />
-        <Route path="workout/history" element={<ProtectedRoute><WorkoutHistory /></ProtectedRoute>} />
+          {/* Workout Routes - Updated to match sidebar paths */}
+          <Route path="workout" element={<ProtectedRoute><Workout /></ProtectedRoute>} />
+          <Route path="workout/create" element={<ProtectedRoute><WorkoutCreator /></ProtectedRoute>} />
+          <Route path="workout/exercise-library" element={<ProtectedRoute><ExerciseLibrary /></ProtectedRoute>} />
+          <Route path="workout/saved-workouts" element={<ProtectedRoute><SavedWorkouts /></ProtectedRoute>} />
+          <Route path="workout/view/:id" element={<ProtectedRoute><WorkoutView /></ProtectedRoute>} />
+          <Route path="workout/history" element={<ProtectedRoute><WorkoutHistory /></ProtectedRoute>} />
 
-        {/* Nutrition Routes - Updated to match sidebar paths */}
-        <Route path="nutrition/calorie-tracking" element={<ProtectedRoute><CalorieTracking /></ProtectedRoute>} />
-        <Route path="nutrition/meal-plans" element={<ProtectedRoute><MealPlans /></ProtectedRoute>} />
-        <Route path="nutrition/food-database" element={<ProtectedRoute><FoodDatabase /></ProtectedRoute>} />
-        <Route path="nutrition" element={<ProtectedRoute><NutritionPage /></ProtectedRoute>} />
-        <Route path="nutrition-calculate" element={<ProtectedRoute><NutritionCalculate /></ProtectedRoute>} />
-        <Route path="discussion-form" element={<ProtectedRoute><DiscussionForm /></ProtectedRoute>} />
+          {/* Nutrition Routes - Updated to match sidebar paths */}
+          <Route path="nutrition/calorie-tracking" element={<ProtectedRoute><CalorieTracking /></ProtectedRoute>} />
+          <Route path="nutrition/meal-plans" element={<ProtectedRoute><MealPlans /></ProtectedRoute>} />
+          <Route path="nutrition/food-database" element={<ProtectedRoute><FoodDatabase /></ProtectedRoute>} />
+          <Route path="nutrition" element={<ProtectedRoute><NutritionPage /></ProtectedRoute>} />
+          <Route path="nutrition-calculate" element={<ProtectedRoute><NutritionCalculate /></ProtectedRoute>} />
+          <Route path="discussion-form" element={<ProtectedRoute><DiscussionForm /></ProtectedRoute>} />
 
-        {/* Legacy routes for backward compatibility */}
-        <Route path="exercise-library" element={<Navigate to="/workout/exercise-library" replace />} />
-        <Route path="saved-workouts" element={<Navigate to="/workout/saved-workouts" replace />} />
-        <Route path="workout-creator" element={<Navigate to="/workout/create" replace />} />
-        <Route path="food-database" element={<Navigate to="/nutrition/food-database" replace />} />
-        <Route path="meal-plans" element={<Navigate to="/nutrition/meal-plans" replace />} />
-        <Route path="calorie-tracking" element={<Navigate to="/nutrition/calorie-tracking" replace />} />
+          {/* Legacy routes for backward compatibility */}
+          <Route path="exercise-library" element={<Navigate to="/workout/exercise-library" replace />} />
+          <Route path="saved-workouts" element={<Navigate to="/workout/saved-workouts" replace />} />
+          <Route path="workout-creator" element={<Navigate to="/workout/create" replace />} />
+          <Route path="food-database" element={<Navigate to="/nutrition/food-database" replace />} />
+          <Route path="meal-plans" element={<Navigate to="/nutrition/meal-plans" replace />} />
+          <Route path="calorie-tracking" element={<Navigate to="/nutrition/calorie-tracking" replace />} />
 
-        {/* Catch-all Route */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Catch-all Route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

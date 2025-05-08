@@ -6,6 +6,7 @@ import foodRouter from './routes/food.js';
 import profileRouter from './routes/profileRoutes.js';
 import tweetRouter from './routes/tweetRoutes.js';
 import workoutHistoryRouter from './routes/workoutHistory.js';
+import socialRouter from './routes/social.js';
 
 import dotenv from 'dotenv';
 dotenv.config({ path: './config/config.env' }); // Load environment variables from config.env file
@@ -54,6 +55,7 @@ app.use('/exercise', exerciseRouter);
 app.use('/food', foodRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/tweets', tweetRouter);
+app.use('/api/social', socialRouter);
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static('uploads'));
