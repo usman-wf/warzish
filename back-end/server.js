@@ -4,7 +4,8 @@ import { router, authenticateToken } from './routes/authRoutes.js';
 import exerciseRouter from './routes/exercise.js';
 import foodRouter from './routes/food.js';
 import profileRouter from './routes/profileRoutes.js';
-import tweetRouter from './routes/tweetRoutes.js'; // Import the new tweet routes
+import tweetRouter from './routes/tweetRoutes.js';
+import workoutHistoryRouter from './routes/workoutHistory.js';
 
 import dotenv from 'dotenv';
 dotenv.config({ path: './config/config.env' }); // Load environment variables from config.env file
@@ -46,11 +47,13 @@ app.get('/verify-token', authenticateToken, (req, res) => {
   });
 });
 
+// Mount routes
 app.use('/api', router);
-app.use('/api', tweetRouter); // Add the tweet routes
-app.use('/exercise', exerciseRouter)
+app.use('/api/workout-history', workoutHistoryRouter);
+app.use('/exercise', exerciseRouter);
 app.use('/food', foodRouter);
-app.use('/api/user', profileRouter);
+app.use('/api/profile', profileRouter);
+app.use('/api/tweets', tweetRouter);
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static('uploads'));

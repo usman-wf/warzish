@@ -12,6 +12,7 @@ import Dashboard from "./screens/Dashboard";
 import Workout from "./screens/Workout";
 import Profile from "./screens/Profile";
 import Goals from "./screens/Goals";
+import WorkoutHistory from "./screens/WorkoutHistory";
 
 // Workout Components
 import WorkoutCreator from './screens/workout/WorkoutCreator';
@@ -59,6 +60,7 @@ function App() {
         <Route path="workout/exercise-library" element={<ProtectedRoute><ExerciseLibrary /></ProtectedRoute>} />
         <Route path="workout/saved-workouts" element={<ProtectedRoute><SavedWorkouts /></ProtectedRoute>} />
         <Route path="workout/view/:id" element={<ProtectedRoute><WorkoutView /></ProtectedRoute>} />
+        <Route path="workout/history" element={<ProtectedRoute><WorkoutHistory /></ProtectedRoute>} />
 
         {/* Nutrition Routes - Updated to match sidebar paths */}
         <Route path="nutrition/calorie-tracking" element={<ProtectedRoute><CalorieTracking /></ProtectedRoute>} />
